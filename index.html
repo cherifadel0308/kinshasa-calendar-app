@@ -439,7 +439,7 @@
                 <button onclick="closeSyncModal()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
             </div>
 
-            <p class="text-xs text-slate-600 leading-relaxed">Paste your published Google Sheet link or raw exported CSV content. The importer automatically updates existing rows in place without creating duplicates.</p>
+            <p class="text-xs text-slate-600 leading-relaxed">Paste your published Google Sheet link or raw exported CSV content. The importer matches rows by Date + Concept so sync updates existing items in place.</p>
 
             <div class="space-y-3">
                 <div>
@@ -484,31 +484,23 @@
         const db = getFirestore(app);
         const postsRef = collection(db, "posts");
 
-        // Initial Data matching Kinshasa Label editorial calendar
-        let postsData = [
-            { id: "1", date: "2026-11-09", day: "Monday", platform: "Facebook & Instagram", format: "Carrousel", pillar: "Kin Business & Prix", concept: "Baisse/Hausse des prix : Le panier de la ménagère à Gambela et Marché de la Liberté.", caption: "🛒 Panier de la ménagère à Kinshasa : Les nouveaux prix du surgelé !\n\nDe Gambela au Marché de la Liberté, les prix du poulet et du poisson enregistrent une hausse. Retrouvez notre rapport complet !\n\n👉 Suivez l'évolution sur kinshasalabel.com !", brief: "Carrousel 4 slides (Format 1080x1350px / 4:5 portrait).\n• Slide 1: Photo étal marché Gambela. Titre: FLAMBÉE DES PRIX À KINSHASA !\n• Slide 2: Tableau comparatif.\n• Slide 3: Écarts Gambela vs Liberté.\n• Slide 4: Outro CTA logo Kinshasa Label.", cta: "kinshasalabel.com", status: "To Prepare", clientValidation: false },
-            { id: "2", date: "2026-11-11", day: "Wednesday", platform: "IG Reel & TikTok", format: "Vidéo courte", pillar: "Focus Commune", concept: "Commune Focus - KALAMU : Le berceau de la Rumba Congolaise et des maquis mythiques.", caption: "🎷 Bienvenue à KALAMU, la commune de la musique et de la joie !\n\nDes maquis de Matonge aux coins mythiques de la rumba, Kalamu vibre jour et nuit.\n\n🗳️ Votez sur kinshasalabel.com !", brief: "Format 9:16 (1080x1920px) Reels/TikTok. 15-20s.\n• Montage vidéo dynamique: plans de coupe Matonge.\n• Bande son: Rumba congolaise.\n• Textes incrustés: TOUR DE KIN: KALAMU.", cta: "kinshasalabel.com/commune/kalamu", status: "To Prepare", clientValidation: false },
-            { id: "3", date: "2026-11-13", day: "Friday", platform: "Facebook & Instagram", format: "Image / Carte", pillar: "Kin Food", concept: "Kin Food - Top 3 des terrasses à Gombe : O Poeta, A Casa Mia et sélection de la rédaction.", caption: "🍕 Où manger ce week-end à Gombe ?\n\nDécouvrez notre sélection des meilleures tables du centre des affaires.\n\n📍 Retrouvez leurs adresses sur kinshasalabel.com !", brief: "Format 4:5 (1080x1350px). Style Guide Gastronomique: 3 encadrés photos plats et terrasses chic à Gombe. Badges dorés 5 étoiles.", cta: "kinshasalabel.com/commune/Gombe", status: "To Prepare", clientValidation: false },
-            { id: "4", date: "2026-11-15", day: "Sunday", platform: "Facebook & Instagram", format: "Image / Texte", pillar: "Kin Culture", concept: "Kin Culture : Zoom sur l'exposition 'Rencontre' d'Aïcha Muteba à l'Hôtel Memling.", caption: "🎨 Quand l'art fait dialoguer les mémoires à Kinshasa...\n\nExposition « Rencontre » par Aïcha Muteba à l'Hôtel Memling.\n\n📲 Suivez toute l'actualité sur kinshasalabel.com !", brief: "Format 4:5 (1080x1350px). Photo haute définition d'une œuvre majeure d'Aïcha Muteba sur fond crème/noir texturé.", cta: "kinshasalabel.com", status: "To Prepare", clientValidation: false },
-            { id: "5", date: "2026-11-16", day: "Monday", platform: "Facebook", format: "Post Texte + Infographie", pillar: "Kin Sécurité", concept: "Kin Sécurité : Les numéros d'urgence utiles et commissariats de police par commune.", caption: "🚨 Urgence ou sécurité à Kinshasa : Gardez les bons numéros à portée de main !\n\nLocalisez le commissariat le plus proche.\n\n📲 Téléchargez la fiche sur kinshasalabel.com !", brief: "Format Infographie Facebook (1200x630px). Style Fiche Réflexe d'Urgence: bleu marine, blanc et rouge alerte.", cta: "kinshasalabel.com", status: "To Prepare", clientValidation: false },
-            { id: "6", date: "2026-11-18", day: "Wednesday", platform: "IG Reel & TikTok", format: "Vidéo courte", pillar: "Jeu / Quiz", concept: "'Tu connais Kin ?' : Devine la commune à partir de ce lieu historique !", caption: "🤔 Test de Kinois : Es-tu un vrai connaisseur de Kin ?\n\nDevine dans quelle commune se trouve ce lieu emblématique !\n\n🗺️ Explore les 24 communes sur kinshasalabel.com !", brief: "Format vertical 9:16 (1080x1920px). Vidéo quiz interactive. Compte à rebours animé 3-2-1.", cta: "kinshasalabel.com", status: "To Prepare", clientValidation: false }
-        ];
-
+        let postsData = [];
         let activeScorecardFilter = 'ALL';
-        let currentStudioPostId = "1";
+        let currentStudioPostId = "";
         let currentMockupPlatform = 'instagram';
 
-        // Realtime Listener
+        // Realtime Listener - Replaces local array completely with database state
         onSnapshot(postsRef, (snapshot) => {
-            if (!snapshot.empty) {
-                let remotePosts = [];
-                snapshot.forEach((doc) => remotePosts.push(doc.data()));
-                postsData = remotePosts;
-                renderAll();
-            }
+            let remotePosts = [];
+            snapshot.forEach((doc) => {
+                remotePosts.push(doc.data());
+            });
+            
+            // Sort posts chronologically by publication date
+            postsData = remotePosts.sort((a, b) => new Date(a.date) - new Date(b.date));
+            renderAll();
         });
 
-        // Global Window Functions
         window.setView = function(viewName) {
             ['table', 'kanban', 'cards', 'studio'].forEach(v => {
                 document.getElementById(`view-${v}`).classList.add('hidden');
@@ -654,7 +646,10 @@
         function renderStudioSelect() {
             const select = document.getElementById('studio-post-select');
             select.innerHTML = postsData.map(p => `<option value="${p.id}">${p.date} - ${p.concept}</option>`).join('');
-            if (postsData.length > 0) onStudioPostChange();
+            if (postsData.length > 0) {
+                currentStudioPostId = postsData[0].id;
+                onStudioPostChange();
+            }
         }
 
         window.onStudioPostChange = function() {
@@ -712,7 +707,7 @@
                     document.getElementById('form-client-validation').checked = !!p.clientValidation;
                 }
             } else {
-                document.getElementById('form-post-id').value = Date.now().toString();
+                document.getElementById('form-post-id').value = "post_" + Date.now();
             }
             document.getElementById('post-modal').classList.remove('hidden');
         };
@@ -723,7 +718,7 @@
 
         window.savePost = function(e) {
             e.preventDefault();
-            const id = document.getElementById('form-post-id').value;
+            const id = document.getElementById('form-post-id').value || ("post_" + Date.now());
             const post = {
                 id,
                 date: document.getElementById('form-date').value,
@@ -742,7 +737,7 @@
             closePostModal();
         };
 
-        // DEDUPLICATED SPREADSHEET SYNC FUNCTION
+        // STABLE DEDUPLICATED IMPORT FUNCTION
         window.importSheetData = async function() {
             const url = document.getElementById('sheet-url-input').value;
             const csvText = document.getElementById('sheet-csv-input').value;
@@ -764,7 +759,6 @@
                 const lines = raw.split('\n').filter(l => l.trim() !== '');
                 let startIdx = 0;
                 
-                // Locate header row dynamically
                 for (let i = 0; i < lines.length; i++) {
                     if (lines[i].toLowerCase().includes('date') && (lines[i].toLowerCase().includes('format') || lines[i].toLowerCase().includes('sujet'))) {
                         startIdx = i + 1;
@@ -772,23 +766,19 @@
                     }
                 }
 
-                lines.slice(startIdx).forEach((line, index) => {
+                lines.slice(startIdx).forEach((line) => {
                     const cols = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(c => c.replace(/^"|"$/g, '').trim());
                     
                     if (cols.length >= 4 && cols[0]) {
                         const dateVal = cols[0];
                         const conceptVal = cols[5] || 'Concept item';
 
-                        // 1. Check if post already exists by Date + Concept
-                        let existingPost = postsData.find(p => p.date === dateVal && p.concept === conceptVal);
-                        
-                        // 2. Fall back to matching by position index
-                        if (!existingPost) {
-                            existingPost = postsData.find(p => p.id === (index + 1).toString());
-                        }
+                        // 1. Create a unique slug key based on Date + Subject Title
+                        const docSlug = "doc_" + (dateVal + "_" + conceptVal).toLowerCase().replace(/[^a-z0-9]/g, '_');
 
-                        // 3. Reuse document ID to update existing row rather than duplicating
-                        const docId = existingPost ? existingPost.id : (index + 1).toString();
+                        // 2. Look up if it exists locally to retain custom user edits
+                        let existingPost = postsData.find(p => p.id === docSlug || (p.date === dateVal && p.concept === conceptVal));
+                        const docId = existingPost ? existingPost.id : docSlug;
 
                         const updatedPost = {
                             id: docId,
@@ -805,6 +795,7 @@
                             clientValidation: existingPost ? existingPost.clientValidation : false
                         };
 
+                        // Writing to docSlug updates in-place in Firestore without creating extra rows
                         setDoc(doc(db, "posts", docId), updatedPost);
                     }
                 });

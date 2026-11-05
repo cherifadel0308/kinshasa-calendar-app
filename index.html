@@ -802,61 +802,64 @@
             return rows;
         }
 
-        window.importSheetData = async function() {
-            const urlInput = document.getElementById('sheet-url-input').value.trim();
-            const csvText = document.getElementById('sheet-csv-input').value.trim();
+       window.importSheetData = async function() {
+    const urlInput = document.getElementById('sheet-url-input').value.trim();
+    const csvText = document.getElementById('sheet-csv-input').value.trim();
 
-            let rawText = csvText;
+    let rawText = csvText;
 
-            if (urlInput) {
-                const match = urlInput.match(/\/d\/([a-zA-Z0-9-_]+)/);
-                if (match && match[1]) {
-                    const sheetId = match[1];
-                    const gidMatch = urlInput.match(/gid=([0-9]+)/);
-                    const gidParam = gidMatch ? `&gid=${gidMatch[1]}` : '';
-                    const fetchUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv${gidParam}`;
-                    
-                    try {
-                        const res = await fetch(fetchUrl);
-                        if (!res.ok) throw new Error('HTTP status ' + res.status);
-                        rawText = await res.text();
-                    } catch(e) {
-                        alert('Error fetching Google Sheet directly. Make sure the sheet sharing is set to "Anyone with the link can view", or paste raw CSV text below.');
-                        return;
-                    }
-                } else {
-                    alert('Invalid Google Sheet URL format.');
-                    return;
-                }
+    if (urlInput) {
+        const match = urlInput.match(/\/d\/([a-zA-Z0-9-_]+)/);
+        if (match && match[1]) {
+            const sheetId = match[1];
+            const gidMatch = urlInput.match(/gid=([0-9]+)/);
+            const gidParam = gidMatch ? `&gid=${gidMatch[1]}` : '';
+            const fetchUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv${gidParam}`;
+            
+            try {
+                const res = await fetch(fetchUrl);
+                if (!res.ok) throw new Error('HTTP status ' + res.status);
+                rawText = await res.text();
+            } catch(e) {
+                alert('Error fetching Google Sheet directly. Make sure sharing is set to "Anyone with the link can view".');
+                return;
             }
+        } else {
+            alert('Invalid Google Sheet URL format.');
+            return;
+        }
+    }
 
-            if (rawText) {
-                const parsedRows = parseCSV(rawText);
-                
-                let startIdx = parsedRows.findIndex(row => {
-                    const lineStr = row.join(' ').toLowerCase();
-                    return lineStr.includes('date') && (lineStr.includes('plateforme') || lineStr.includes('format'));
-                });
+    if (rawText) {
+        const parsedRows = parseCSV(rawText);
+        
+        // Find the header row containing 'date'
+        let startIdx = parsedRows.findIndex(row => {
+            const lineStr = row.join(' ').toLowerCase();
+            return lineStr.includes('date') && (lineStr.includes('plateforme') || lineStr.includes('format'));
+        });
 
-                if (startIdx === -1) startIdx = 0;
+        if (startIdx === -1) startIdx = 0;
 
-                const dataRows = parsedRows.slice(startIdx + 1);
+        const dataRows = parsedRows.slice(startIdx + 1);
 
-                dataRows.forEach((cols) => {
-                    if (cols.length >= 4 && cols[0] && (cols[0].includes('/') || cols[0].includes('-'))) {
-                        const dateVal = cols[0];
-                        const conceptVal = cols[5] || cols[4] || 'Concept Item';
+        dataRows.forEach((cols) => {
+            // Updated row check: accepts non-empty dates and valid row lengths
+            const rawDate = cols[0] ? cols[0].trim() : '';
+            if (rawDate && rawDate.toLowerCase() !== 'date' && cols.length >= 4) {
+                const dateVal = rawDate;
+                const conceptVal = cols[5] || cols[4] || 'Concept Item';
 
-                        const docSlug = "doc_" + (dateVal + "_" + conceptVal).toLowerCase().replace(/[^a-z0-9]/g, '_');
+                const docSlug = "doc_" + (dateVal + "_" + conceptVal).toLowerCase().replace(/[^a-z0-9]/g, '_');
 
-                        const updatedPost = {
-                            id: docSlug,
-                            date: dateVal,
-                            day: cols[1] || '',
-                            platform: cols[2] || 'Facebook & Instagram',
-                            format: cols[3] || 'Carrousel',
-                            pillar: cols[4] || 'Kin Business & Prix',
-                            concept: conceptVal,
+                const updatedPost = {
+                    id: docSlug,
+                    date: dateVal,
+                    day: cols[1] || '',
+                    platform: cols[2] || 'Facebook & Instagram',
+                    format: cols[3] || 'Carrousel',
+                    pillar: cols[4] || 'Kin Business & Prix',
+                    concept: conceptVal,
                             caption: cols[6] || '',
                             brief: cols[7] || '',
                             cta: cols[8] || '',
@@ -870,9 +873,7 @@
                 
                 closeSyncModal();
             }
-        };
-
-        function renderAll() {
+        };        function renderAll() {
             filterPosts();
             renderStudioSelect();
         }

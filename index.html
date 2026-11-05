@@ -465,7 +465,7 @@
         </div>
     </div>
 
-    <!-- FIREBASE MODULE & APPLICATION SCRIPT -->
+  <!-- FIREBASE MODULE & APPLICATION SCRIPT -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js";
         import { getFirestore, collection, onSnapshot, doc, setDoc } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
@@ -489,7 +489,7 @@
         let currentStudioPostId = "";
         let currentMockupPlatform = 'instagram';
 
-        // Realtime Listener - Replaces local array completely with database state
+        // Realtime Listener
         onSnapshot(postsRef, (snapshot) => {
             let remotePosts = [];
             snapshot.forEach((doc) => {
@@ -747,46 +747,95 @@
             closePostModal();
         };
 
-        // ACCURATE & DEDUPLICATED SPREADSHEET IMPORTER
-        window.importSheetData = async function() {
-            const url = document.getElementById('sheet-url-input').value;
-            const csvText = document.getElementById('sheet-csv-input').value;
+        // CSV PARSER THAT HANDLES QUOTED MULTI-LINE CELLS
+        function parseCSV(text) {
+            const rows = [];
+            let currentRow = [];
+            let currentCell = '';
+            let inQuotes = false;
 
-            let raw = csvText;
-            if (url) {
-                try {
-                    let fetchUrl = url;
-                    if (url.includes('/edit')) fetchUrl = url.replace(/\/edit.*$/, '/export?format=csv');
-                    const res = await fetch(fetchUrl);
-                    raw = await res.text();
-                } catch(e) {
-                    alert('Could not fetch URL directly. Please paste CSV text below.');
+            for (let i = 0; i < text.length; i++) {
+                const char = text[i];
+                const nextChar = text[i + 1];
+
+                if (char === '"') {
+                    if (inQuotes && nextChar === '"') {
+                        currentCell += '"';
+                        i++;
+                    } else {
+                        inQuotes = !inQuotes;
+                    }
+                } else if (char === ',' && !inQuotes) {
+                    currentRow.push(currentCell.trim());
+                    currentCell = '';
+                } else if ((char === '\r' || char === '\n') && !inQuotes) {
+                    if (char === '\r' && nextChar === '\n') i++;
+                    currentRow.push(currentCell.trim());
+                    if (currentRow.some(c => c !== '')) rows.push(currentRow);
+                    currentRow = [];
+                    currentCell = '';
+                } else {
+                    currentCell += char;
+                }
+            }
+            if (currentCell || currentRow.length > 0) {
+                currentRow.push(currentCell.trim());
+                if (currentRow.some(c => c !== '')) rows.push(currentRow);
+            }
+            return rows;
+        }
+
+        // GOOGLE SHEET DIRECT IMPORTER VIA GVIZ PROXY
+        window.importSheetData = async function() {
+            const urlInput = document.getElementById('sheet-url-input').value.trim();
+            const csvText = document.getElementById('sheet-csv-input').value.trim();
+
+            let rawText = csvText;
+
+            if (urlInput) {
+                // Extract Google Sheet Unique ID
+                const match = urlInput.match(/\/d\/([a-zA-Z0-9-_]+)/);
+                if (match && match[1]) {
+                    const sheetId = match[1];
+                    // Extract gid if present
+                    const gidMatch = urlInput.match(/gid=([0-9]+)/);
+                    const gidParam = gidMatch ? `&gid=${gidMatch[1]}` : '';
+                    const fetchUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv${gidParam}`;
+                    
+                    try {
+                        const res = await fetch(fetchUrl);
+                        if (!res.ok) throw new Error('HTTP status ' + res.status);
+                        rawText = await res.text();
+                    } catch(e) {
+                        alert('Error fetching Google Sheet directly. Make sure the sheet sharing is set to "Anyone with the link can view", or paste raw CSV text below.');
+                        return;
+                    }
+                } else {
+                    alert('Invalid Google Sheet URL format.');
                     return;
                 }
             }
 
-            if (raw) {
-                const lines = raw.split('\n').filter(l => l.trim() !== '');
+            if (rawText) {
+                const parsedRows = parseCSV(rawText);
                 
-                // Locate table header line
-                let startIdx = lines.findIndex(line => {
-                    const lower = line.toLowerCase();
-                    return lower.includes('date') && lower.includes('plateforme') && lower.includes('format');
+                // Locate header row where 'Date' column is positioned
+                let startIdx = parsedRows.findIndex(row => {
+                    const lineStr = row.join(' ').toLowerCase();
+                    return lineStr.includes('date') && (lineStr.includes('plateforme') || lineStr.includes('format'));
                 });
 
                 if (startIdx === -1) startIdx = 0;
 
-                const dataLines = lines.slice(startIdx + 1);
+                const dataRows = parsedRows.slice(startIdx + 1);
 
-                dataLines.forEach((line) => {
-                    const cols = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(c => c.replace(/^"|"$/g, '').trim());
-                    
-                    // Filter: Must contain a valid date (e.g., DD/MM/YYYY) and concept
-                    if (cols.length >= 6 && cols[0] && cols[0].includes('/')) {
+                dataRows.forEach((cols) => {
+                    // Valid rows must have date (e.g., 09/11/2026 or 2026-11-09)
+                    if (cols.length >= 4 && cols[0] && (cols[0].includes('/') || cols[0].includes('-'))) {
                         const dateVal = cols[0];
-                        const conceptVal = cols[5] || 'Concept Item';
+                        const conceptVal = cols[5] || cols[4] || 'Concept Item';
 
-                        // Unique deterministic slug per publication
+                        // Create stable doc slug to update existing entries
                         const docSlug = "doc_" + (dateVal + "_" + conceptVal).toLowerCase().replace(/[^a-z0-9]/g, '_');
 
                         const updatedPost = {
@@ -819,6 +868,5 @@
 
         renderAll();
         lucide.createIcons();
-    </script>
-</body>
+    </script></body>
 </html>

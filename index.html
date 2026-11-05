@@ -173,7 +173,6 @@
                 <button onclick="setView('kanban')" id="tab-kanban" class="flex-1 md:flex-initial px-4 py-1.5 text-xs font-bold rounded-md text-slate-600 hover:text-slate-900 transition">
                     <i data-lucide="kanban" class="w-3.5 h-3.5 inline mr-1.5"></i> Kanban Board
                 </button>
-
                 <button onclick="setView('cards')" id="tab-cards" class="flex-1 md:flex-initial px-4 py-1.5 text-xs font-bold rounded-md text-slate-600 hover:text-slate-900 transition">
                     <i data-lucide="layout-grid" class="w-3.5 h-3.5 inline mr-1.5"></i> Brief Cards
                 </button>
@@ -198,7 +197,7 @@
             </div>
         </div>
 
-        <!-- VIEW 1: SHEET TABLE VIEW (FULL 16 COLUMNS MATCHING SPREADSHEET) -->
+        <!-- VIEW 1: SHEET TABLE VIEW -->
         <div id="view-table" class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
             <div class="overflow-x-auto custom-scrollbar">
                 <table class="w-full text-left border-collapse min-w-[1200px]">
@@ -225,7 +224,6 @@
 
         <!-- VIEW 2: KANBAN BOARD -->
         <div id="view-kanban" class="hidden grid grid-cols-1 md:grid-cols-4 gap-4">
-            <!-- To Prepare Column -->
             <div class="bg-slate-100 p-3 rounded-xl border border-slate-200 flex flex-col h-[700px]">
                 <div class="flex items-center justify-between pb-3 border-b border-slate-200 mb-3">
                     <span class="text-xs font-bold uppercase text-amber-700">À Préparer / To Prepare</span>
@@ -234,7 +232,6 @@
                 <div id="kanban-col-to-prepare" class="flex-1 overflow-y-auto space-y-3 custom-scrollbar pr-1"></div>
             </div>
 
-            <!-- In Progress Column -->
             <div class="bg-slate-100 p-3 rounded-xl border border-slate-200 flex flex-col h-[700px]">
                 <div class="flex items-center justify-between pb-3 border-b border-slate-200 mb-3">
                     <span class="text-xs font-bold uppercase text-blue-700">In Progress</span>
@@ -243,7 +240,6 @@
                 <div id="kanban-col-in-progress" class="flex-1 overflow-y-auto space-y-3 custom-scrollbar pr-1"></div>
             </div>
 
-            <!-- Review Needed Column -->
             <div class="bg-slate-100 p-3 rounded-xl border border-slate-200 flex flex-col h-[700px]">
                 <div class="flex items-center justify-between pb-3 border-b border-slate-200 mb-3">
                     <span class="text-xs font-bold uppercase text-purple-700">En Validation / Review</span>
@@ -252,7 +248,6 @@
                 <div id="kanban-col-review-needed" class="flex-1 overflow-y-auto space-y-3 custom-scrollbar pr-1"></div>
             </div>
 
-            <!-- Approved Column -->
             <div class="bg-slate-100 p-3 rounded-xl border border-slate-200 flex flex-col h-[700px]">
                 <div class="flex items-center justify-between pb-3 border-b border-slate-200 mb-3">
                     <span class="text-xs font-bold uppercase text-emerald-700">Programmés / Ready</span>
@@ -269,7 +264,6 @@
 
         <!-- VIEW 4: DESIGNER STUDIO & LIVE MOCKUP PREVIEW -->
         <div id="view-studio" class="hidden bg-white p-6 rounded-xl border border-slate-200 shadow-sm grid grid-cols-1 lg:grid-cols-12 gap-8">
-            <!-- Studio Form & Controls (LHS) -->
             <div class="lg:col-span-7 space-y-5">
                 <div>
                     <h3 class="text-base font-bold text-slate-900">Designer Handoff & Platform Preview</h3>
@@ -280,11 +274,9 @@
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1">Select Active Post</label>
                         <select id="studio-post-select" onchange="onStudioPostChange()" class="w-full text-xs p-2.5 border border-slate-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500">
-                            <!-- Options populated dynamically -->
                         </select>
                     </div>
 
-                    <!-- Upload Box -->
                     <div class="border-2 border-dashed border-slate-300 rounded-xl p-6 text-center hover:bg-slate-50 transition cursor-pointer" onclick="document.getElementById('studio-file-input').click()">
                         <input type="file" id="studio-file-input" onchange="handleDesignerUpload(event)" accept="image/*,video/*" class="hidden">
                         <i data-lucide="cloud-upload" class="w-8 h-8 text-blue-500 mx-auto mb-2"></i>
@@ -292,13 +284,11 @@
                         <p class="text-[11px] text-slate-400 mt-1">Supports PNG, JPG, MP4 (Square 1:1, Portrait 4:5, Vertical 9:16)</p>
                     </div>
 
-                    <!-- Brief Detail Block -->
                     <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
                         <span class="text-[10px] font-bold uppercase text-slate-400">Designer Brief Instructions</span>
                         <p id="studio-brief-text" class="text-xs text-slate-700 leading-relaxed italic">Select a post to view visual instructions.</p>
                     </div>
 
-                    <!-- Platform Toggle Buttons -->
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-2">Device Mockup Frame</label>
                         <div class="flex items-center space-x-2">
@@ -310,13 +300,9 @@
                 </div>
             </div>
 
-            <!-- Phone Frame Mockup (RHS) -->
             <div class="lg:col-span-5 flex flex-col items-center justify-center border-t lg:border-t-0 lg:border-l border-slate-200 pt-6 lg:pt-0 lg:pl-6">
-                <!-- Mobile Screen Mockup Container -->
                 <div id="mockup-frame-container" class="w-[320px] bg-black rounded-[40px] p-3 shadow-2xl border-4 border-slate-800 relative">
-                    <!-- Dynamic Aspect Frame -->
                     <div id="mockup-screen" class="bg-slate-900 rounded-[30px] overflow-hidden relative flex flex-col aspect-4-5">
-                        <!-- Top Header Bar -->
                         <div class="bg-black/80 backdrop-blur-md px-3 py-2 flex items-center justify-between text-white z-10">
                             <div class="flex items-center space-x-2">
                                 <div class="w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center text-[10px] font-bold">KL</div>
@@ -325,12 +311,10 @@
                             <i data-lucide="more-horizontal" class="w-4 h-4 text-slate-300"></i>
                         </div>
 
-                        <!-- Image/Video Screen Area -->
                         <div id="mockup-media-area" class="flex-1 bg-slate-800 flex items-center justify-center relative overflow-hidden">
                             <p class="text-xs text-slate-400 text-center px-4">No graphic asset uploaded yet.<br><span class="text-[10px] text-slate-500">Upload an image to preview.</span></p>
                         </div>
 
-                        <!-- Bottom Caption Overlay -->
                         <div class="bg-black/90 p-3 text-white z-10 space-y-1">
                             <div class="flex items-center space-x-3 text-white mb-1">
                                 <i data-lucide="heart" class="w-4 h-4"></i>
@@ -345,21 +329,14 @@
         </div>
     </main>
 
-    <!-- POST CREATION & EDIT MODAL -->
+    <!-- POST MODAL -->
     <div id="post-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
-            <!-- Modal Header -->
             <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
                 <h3 id="modal-title" class="text-sm font-bold text-slate-900">New Publication</h3>
-                <div class="flex items-center space-x-2">
-                    <button type="button" onclick="generateWithAI()" class="inline-flex items-center px-3 py-1.5 text-xs font-bold rounded-lg text-purple-700 bg-purple-100 hover:bg-purple-200 transition">
-                        <i data-lucide="sparkles" class="w-3.5 h-3.5 mr-1.5"></i> Generate with AI (Gemini)
-                    </button>
-                    <button onclick="closePostModal()" class="text-slate-400 hover:text-slate-600 p-1"><i data-lucide="x" class="w-5 h-5"></i></button>
-                </div>
+                <button onclick="closePostModal()" class="text-slate-400 hover:text-slate-600 p-1"><i data-lucide="x" class="w-5 h-5"></i></button>
             </div>
 
-            <!-- Form Body -->
             <div class="p-6 overflow-y-auto space-y-4 custom-scrollbar">
                 <form id="post-form" onsubmit="savePost(event)" class="space-y-4">
                     <input type="hidden" id="form-post-id">
@@ -442,10 +419,9 @@
 
                     <div class="flex items-center space-x-2 pt-2">
                         <input type="checkbox" id="form-client-validation" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
-                        <label for="form-client-validation" class="text-xs font-bold text-slate-700">Client / Claude Validation Approved</label>
+                        <label for="form-client-validation" class="text-xs font-bold text-slate-700">Client Validation Approved</label>
                     </div>
 
-                    <!-- Modal Actions -->
                     <div class="pt-4 border-t border-slate-200 flex items-center justify-end space-x-3">
                         <button type="button" onclick="closePostModal()" class="px-4 py-2 text-xs font-bold text-slate-600 hover:text-slate-800">Cancel</button>
                         <button type="submit" class="px-5 py-2 text-xs font-bold rounded-lg text-white bg-blue-600 hover:bg-blue-700 shadow-sm">Save Publication</button>
@@ -463,7 +439,7 @@
                 <button onclick="closeSyncModal()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
             </div>
 
-            <p class="text-xs text-slate-600 leading-relaxed">Paste your published Google Sheet link or raw exported CSV content. The importer automatically detects your column headers and imports your editorial calendar.</p>
+            <p class="text-xs text-slate-600 leading-relaxed">Paste your published Google Sheet link or raw exported CSV content. The importer automatically updates existing rows in place without creating duplicates.</p>
 
             <div class="space-y-3">
                 <div>
@@ -492,7 +468,7 @@
     <!-- FIREBASE MODULE & APPLICATION SCRIPT -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js";
-        import { getFirestore, collection, onSnapshot, doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
+        import { getFirestore, collection, onSnapshot, doc, setDoc } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
 
         // Firebase Credentials
         const firebaseConfig = {
@@ -514,7 +490,7 @@
             { id: "2", date: "2026-11-11", day: "Wednesday", platform: "IG Reel & TikTok", format: "Vidéo courte", pillar: "Focus Commune", concept: "Commune Focus - KALAMU : Le berceau de la Rumba Congolaise et des maquis mythiques.", caption: "🎷 Bienvenue à KALAMU, la commune de la musique et de la joie !\n\nDes maquis de Matonge aux coins mythiques de la rumba, Kalamu vibre jour et nuit.\n\n🗳️ Votez sur kinshasalabel.com !", brief: "Format 9:16 (1080x1920px) Reels/TikTok. 15-20s.\n• Montage vidéo dynamique: plans de coupe Matonge.\n• Bande son: Rumba congolaise.\n• Textes incrustés: TOUR DE KIN: KALAMU.", cta: "kinshasalabel.com/commune/kalamu", status: "To Prepare", clientValidation: false },
             { id: "3", date: "2026-11-13", day: "Friday", platform: "Facebook & Instagram", format: "Image / Carte", pillar: "Kin Food", concept: "Kin Food - Top 3 des terrasses à Gombe : O Poeta, A Casa Mia et sélection de la rédaction.", caption: "🍕 Où manger ce week-end à Gombe ?\n\nDécouvrez notre sélection des meilleures tables du centre des affaires.\n\n📍 Retrouvez leurs adresses sur kinshasalabel.com !", brief: "Format 4:5 (1080x1350px). Style Guide Gastronomique: 3 encadrés photos plats et terrasses chic à Gombe. Badges dorés 5 étoiles.", cta: "kinshasalabel.com/commune/Gombe", status: "To Prepare", clientValidation: false },
             { id: "4", date: "2026-11-15", day: "Sunday", platform: "Facebook & Instagram", format: "Image / Texte", pillar: "Kin Culture", concept: "Kin Culture : Zoom sur l'exposition 'Rencontre' d'Aïcha Muteba à l'Hôtel Memling.", caption: "🎨 Quand l'art fait dialoguer les mémoires à Kinshasa...\n\nExposition « Rencontre » par Aïcha Muteba à l'Hôtel Memling.\n\n📲 Suivez toute l'actualité sur kinshasalabel.com !", brief: "Format 4:5 (1080x1350px). Photo haute définition d'une œuvre majeure d'Aïcha Muteba sur fond crème/noir texturé.", cta: "kinshasalabel.com", status: "To Prepare", clientValidation: false },
-            { id: "5", date: "2026-11-16", day: "Monday", platform: "Facebook", format: "Post Texte + Infographie", pillar: "Kin Sécurité", concept: "Kin Sécurité : Les numéros d'urgence utiles et commissariats de police par commune.", caption: "🚨 Urgence ou sécurité à Kinshasa : Gardez les bons numéros à portée de hand !\n\nLocalisez le commissariat le plus proche.\n\n📲 Téléchargez la fiche sur kinshasalabel.com !", brief: "Format Infographie Facebook (1200x630px). Style Fiche Réflexe d'Urgence: bleu marine, blanc et rouge alerte.", cta: "kinshasalabel.com", status: "To Prepare", clientValidation: false },
+            { id: "5", date: "2026-11-16", day: "Monday", platform: "Facebook", format: "Post Texte + Infographie", pillar: "Kin Sécurité", concept: "Kin Sécurité : Les numéros d'urgence utiles et commissariats de police par commune.", caption: "🚨 Urgence ou sécurité à Kinshasa : Gardez les bons numéros à portée de main !\n\nLocalisez le commissariat le plus proche.\n\n📲 Téléchargez la fiche sur kinshasalabel.com !", brief: "Format Infographie Facebook (1200x630px). Style Fiche Réflexe d'Urgence: bleu marine, blanc et rouge alerte.", cta: "kinshasalabel.com", status: "To Prepare", clientValidation: false },
             { id: "6", date: "2026-11-18", day: "Wednesday", platform: "IG Reel & TikTok", format: "Vidéo courte", pillar: "Jeu / Quiz", concept: "'Tu connais Kin ?' : Devine la commune à partir de ce lieu historique !", caption: "🤔 Test de Kinois : Es-tu un vrai connaisseur de Kin ?\n\nDevine dans quelle commune se trouve ce lieu emblématique !\n\n🗺️ Explore les 24 communes sur kinshasalabel.com !", brief: "Format vertical 9:16 (1080x1920px). Vidéo quiz interactive. Compte à rebours animé 3-2-1.", cta: "kinshasalabel.com", status: "To Prepare", clientValidation: false }
         ];
 
@@ -766,6 +742,7 @@
             closePostModal();
         };
 
+        // DEDUPLICATED SPREADSHEET SYNC FUNCTION
         window.importSheetData = async function() {
             const url = document.getElementById('sheet-url-input').value;
             const csvText = document.getElementById('sheet-csv-input').value;
@@ -786,6 +763,8 @@
             if (raw) {
                 const lines = raw.split('\n').filter(l => l.trim() !== '');
                 let startIdx = 0;
+                
+                // Locate header row dynamically
                 for (let i = 0; i < lines.length; i++) {
                     if (lines[i].toLowerCase().includes('date') && (lines[i].toLowerCase().includes('format') || lines[i].toLowerCase().includes('sujet'))) {
                         startIdx = i + 1;
@@ -795,24 +774,41 @@
 
                 lines.slice(startIdx).forEach((line, index) => {
                     const cols = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(c => c.replace(/^"|"$/g, '').trim());
+                    
                     if (cols.length >= 4 && cols[0]) {
-                        const newPost = {
-                            id: (Date.now() + index).toString(),
-                            date: cols[0] || '2026-11-01',
+                        const dateVal = cols[0];
+                        const conceptVal = cols[5] || 'Concept item';
+
+                        // 1. Check if post already exists by Date + Concept
+                        let existingPost = postsData.find(p => p.date === dateVal && p.concept === conceptVal);
+                        
+                        // 2. Fall back to matching by position index
+                        if (!existingPost) {
+                            existingPost = postsData.find(p => p.id === (index + 1).toString());
+                        }
+
+                        // 3. Reuse document ID to update existing row rather than duplicating
+                        const docId = existingPost ? existingPost.id : (index + 1).toString();
+
+                        const updatedPost = {
+                            id: docId,
+                            date: dateVal,
                             day: cols[1] || '',
                             platform: cols[2] || 'Facebook & Instagram',
                             format: cols[3] || 'Carrousel',
                             pillar: cols[4] || 'Kin Business & Prix',
-                            concept: cols[5] || 'Concept item',
+                            concept: conceptVal,
                             caption: cols[6] || '',
                             brief: cols[7] || '',
                             cta: cols[8] || '',
-                            status: cols[9] || 'To Prepare',
-                            clientValidation: false
+                            status: cols[9] || (existingPost ? existingPost.status : 'To Prepare'),
+                            clientValidation: existingPost ? existingPost.clientValidation : false
                         };
-                        setDoc(doc(db, "posts", newPost.id), newPost);
+
+                        setDoc(doc(db, "posts", docId), updatedPost);
                     }
                 });
+                
                 closeSyncModal();
             }
         };

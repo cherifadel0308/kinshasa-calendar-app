@@ -24,13 +24,10 @@
     <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div class="flex items-center space-x-3">
-                <!-- Kinshasa Label SVG Logo -->
                 <div class="w-10 h-10 flex-shrink-0">
                     <svg viewBox="0 0 500 500" class="w-full h-full drop-shadow-sm">
-                        <!-- Outer Ferris Wheel Rim & Spoke Accents -->
                         <circle cx="250" cy="220" r="200" fill="none" stroke="#2563eb" stroke-width="12" />
                         <circle cx="250" cy="220" r="180" fill="none" stroke="#eab308" stroke-width="4" stroke-dasharray="10 8" />
-                        <!-- Spokes -->
                         <line x1="250" y1="220" x2="250" y2="20" stroke="#ef4444" stroke-width="4" />
                         <line x1="250" y1="220" x2="390" y2="78" stroke="#2563eb" stroke-width="4" />
                         <line x1="250" y1="220" x2="445" y2="220" stroke="#ef4444" stroke-width="4" />
@@ -40,7 +37,6 @@
                         <line x1="250" y1="220" x2="110" y2="78" stroke="#eab308" stroke-width="4" />
                         <line x1="250" y1="220" x2="200" y2="35" stroke="#ef4444" stroke-width="4" />
                         <line x1="250" y1="220" x2="300" y2="35" stroke="#eab308" stroke-width="4" />
-                        <!-- Outer Cabins -->
                         <rect x="242" y="10" width="16" height="16" rx="4" fill="#ef4444" />
                         <rect x="382" y="68" width="16" height="16" rx="4" fill="#2563eb" />
                         <rect x="437" y="212" width="16" height="16" rx="4" fill="#ef4444" />
@@ -50,9 +46,7 @@
                         <rect x="102" y="68" width="16" height="16" rx="4" fill="#ef4444" />
                         <rect x="192" y="25" width="16" height="16" rx="4" fill="#eab308" />
                         <rect x="292" y="25" width="16" height="16" rx="4" fill="#eab308" />
-                        <!-- Skyscraper (Left K stem) -->
                         <path d="M120,400 L120,150 L160,120 L200,140 L200,400 Z" fill="#2563eb" />
-                        <!-- Skyscraper Windows -->
                         <line x1="135" y1="160" x2="185" y2="160" stroke="#ffffff" stroke-width="3" />
                         <line x1="135" y1="185" x2="185" y2="185" stroke="#ffffff" stroke-width="3" />
                         <line x1="135" y1="210" x2="185" y2="210" stroke="#ffffff" stroke-width="3" />
@@ -62,14 +56,11 @@
                         <line x1="135" y1="310" x2="185" y2="310" stroke="#ffffff" stroke-width="3" />
                         <line x1="135" y1="335" x2="185" y2="335" stroke="#ffffff" stroke-width="3" />
                         <line x1="135" y1="360" x2="185" y2="360" stroke="#ffffff" stroke-width="3" />
-                        <!-- Red Diagonal Base K -->
                         <path d="M210,240 L385,410 L310,410 L210,310 Z" fill="#dc2626" />
                         <line x1="240" y1="330" x2="300" y2="330" stroke="#ffffff" stroke-width="3" />
                         <line x1="250" y1="350" x2="310" y2="350" stroke="#ffffff" stroke-width="3" />
-                        <!-- Yellow Location Pin Top K -->
                         <path d="M210,240 L360,110 L360,200 L260,260 Z" fill="#eab308" />
                         <path d="M240,240 L360,110 L280,260 Z" fill="#dc2626" opacity="0.6" />
-                        <!-- River Wave Base -->
                         <path d="M100,430 Q250,380 400,440 Q250,470 100,430 Z" fill="#3b82f6" />
                     </svg>
                 </div>
@@ -79,7 +70,6 @@
                 </div>
             </div>
 
-            <!-- Header Actions -->
             <div class="flex items-center space-x-3">
                 <button onclick="openSyncModal()" class="inline-flex items-center px-3 py-1.5 border border-slate-300 shadow-sm text-xs font-semibold rounded-lg text-slate-700 bg-white hover:bg-slate-50 transition">
                     <i data-lucide="link" class="w-4 h-4 mr-1.5 text-slate-500"></i> Import Google Sheet
@@ -94,7 +84,7 @@
     <!-- MAIN CONTENT AREA -->
     <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
 
-        <!-- SCORECARDS / KPI SUMMARY BAR (CLICKABLE FILTERS) -->
+        <!-- SCORECARDS / KPI SUMMARY BAR -->
         <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
             <div onclick="filterByScorecard('ALL')" id="card-all" class="bg-white p-4 rounded-xl border border-blue-500 ring-2 ring-blue-100 shadow-sm cursor-pointer hover:border-blue-500 transition">
                 <div class="flex items-center justify-between">
@@ -165,7 +155,6 @@
 
         <!-- NAVIGATION VIEW TABS & FILTERS BAR -->
         <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
-            <!-- View Tabs -->
             <div class="flex items-center bg-slate-100 p-1 rounded-lg w-full md:w-auto">
                 <button onclick="setView('table')" id="tab-table" class="flex-1 md:flex-initial px-4 py-1.5 text-xs font-bold rounded-md bg-white text-slate-900 shadow-sm transition">
                     <i data-lucide="table" class="w-3.5 h-3.5 inline mr-1.5"></i> Sheet Table
@@ -181,7 +170,6 @@
                 </button>
             </div>
 
-            <!-- Filters -->
             <div class="flex items-center space-x-3 w-full md:w-auto justify-end">
                 <div class="relative flex-1 md:w-48">
                     <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-2.5"></i>
@@ -216,7 +204,6 @@
                         </tr>
                     </thead>
                     <tbody id="table-body" class="divide-y divide-slate-200 text-xs text-slate-700">
-                        <!-- Table rows populated dynamically -->
                     </tbody>
                 </table>
             </div>
@@ -259,7 +246,6 @@
 
         <!-- VIEW 3: BRIEF CARDS VIEW -->
         <div id="view-cards" class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <!-- Cards populated dynamically -->
         </div>
 
         <!-- VIEW 4: DESIGNER STUDIO & LIVE MOCKUP PREVIEW -->
@@ -439,7 +425,7 @@
                 <button onclick="closeSyncModal()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
             </div>
 
-            <p class="text-xs text-slate-600 leading-relaxed">Paste your published Google Sheet link or raw exported CSV content. Summary headers are ignored and posts are upserted cleanly by Date + Concept.</p>
+            <p class="text-xs text-slate-600 leading-relaxed">Paste your Google Sheet URL or raw CSV export text below. The importer bypasses CORS limitations and processes multi-line cell values cleanly.</p>
 
             <div class="space-y-3">
                 <div>
@@ -465,12 +451,11 @@
         </div>
     </div>
 
-  <!-- FIREBASE MODULE & APPLICATION SCRIPT -->
+    <!-- FIREBASE MODULE & APPLICATION SCRIPT -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js";
         import { getFirestore, collection, onSnapshot, doc, setDoc } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
 
-        // Firebase Credentials
         const firebaseConfig = {
             apiKey: "AIzaSyB3lEWQTbsH6BRICXAJYAv5qn-IzygOpZM",
             authDomain: "kinshasa-label-calendar.firebaseapp.com",
@@ -489,14 +474,12 @@
         let currentStudioPostId = "";
         let currentMockupPlatform = 'instagram';
 
-        // Realtime Listener
         onSnapshot(postsRef, (snapshot) => {
             let remotePosts = [];
             snapshot.forEach((doc) => {
                 remotePosts.push(doc.data());
             });
             
-            // Sort posts chronologically by publication date
             postsData = remotePosts.sort((a, b) => {
                 const parseDate = (d) => {
                     if (!d) return 0;
@@ -747,7 +730,6 @@
             closePostModal();
         };
 
-        // CSV PARSER THAT HANDLES QUOTED MULTI-LINE CELLS
         function parseCSV(text) {
             const rows = [];
             let currentRow = [];
@@ -785,7 +767,6 @@
             return rows;
         }
 
-        // GOOGLE SHEET DIRECT IMPORTER VIA GVIZ PROXY
         window.importSheetData = async function() {
             const urlInput = document.getElementById('sheet-url-input').value.trim();
             const csvText = document.getElementById('sheet-csv-input').value.trim();
@@ -793,11 +774,9 @@
             let rawText = csvText;
 
             if (urlInput) {
-                // Extract Google Sheet Unique ID
                 const match = urlInput.match(/\/d\/([a-zA-Z0-9-_]+)/);
                 if (match && match[1]) {
                     const sheetId = match[1];
-                    // Extract gid if present
                     const gidMatch = urlInput.match(/gid=([0-9]+)/);
                     const gidParam = gidMatch ? `&gid=${gidMatch[1]}` : '';
                     const fetchUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv${gidParam}`;
@@ -819,7 +798,6 @@
             if (rawText) {
                 const parsedRows = parseCSV(rawText);
                 
-                // Locate header row where 'Date' column is positioned
                 let startIdx = parsedRows.findIndex(row => {
                     const lineStr = row.join(' ').toLowerCase();
                     return lineStr.includes('date') && (lineStr.includes('plateforme') || lineStr.includes('format'));
@@ -830,12 +808,10 @@
                 const dataRows = parsedRows.slice(startIdx + 1);
 
                 dataRows.forEach((cols) => {
-                    // Valid rows must have date (e.g., 09/11/2026 or 2026-11-09)
                     if (cols.length >= 4 && cols[0] && (cols[0].includes('/') || cols[0].includes('-'))) {
                         const dateVal = cols[0];
                         const conceptVal = cols[5] || cols[4] || 'Concept Item';
 
-                        // Create stable doc slug to update existing entries
                         const docSlug = "doc_" + (dateVal + "_" + conceptVal).toLowerCase().replace(/[^a-z0-9]/g, '_');
 
                         const updatedPost = {
@@ -868,5 +844,6 @@
 
         renderAll();
         lucide.createIcons();
-    </script></body>
+    </script>
+</body>
 </html>

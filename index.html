@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kinshasa Label — Content & Design Workflow Studio</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .aspect-4-5 { aspect-ratio: 4 / 5; }
+        .aspect-9-16 { aspect-ratio: 9 / 16; }
+        .aspect-1-1 { aspect-ratio: 1 / 1; }
+        .aspect-16-9 { aspect-ratio: 16 / 9; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col font-sans">
+
+    <!-- TOP HEADER / NAV -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <!-- Kinshasa Label SVG Logo -->
+                <div class="w-10 h-10 flex-shrink-0">
+                    <svg viewBox="0 0 500 500" class="w-full h-full drop-shadow-sm">
+                        <!-- Outer Ferris Wheel Rim & Spoke Accents -->
+                        <circle cx="250" cy="220" r="200" fill="none" stroke="#2563eb" stroke-width="12" />
+                        <circle cx="250" cy="220" r="180" fill="none" stroke="#eab308" stroke-width="4" stroke-dasharray="10 8" />
+                        <!-- Spokes -->
+                        <line x1="250" y1="220" x2="250" y2="20" stroke="#ef4444" stroke-width="4" />
+                        <line x1="250" y1="220" x2="390" y2="78" stroke="#2563eb" stroke-width="4" />
+                        <line x1="250" y1="220" x2="445" y2="220" stroke="#ef4444" stroke-width="4" />
+                        <line x1="250" y1="220" x2="390" y2="362" stroke="#eab308" stroke-width="4" />
+                        <line x1="250" y1="220" x2="110" y2="362" stroke="#ef4444" stroke-width="4" />
+                        <line x1="250" y1="220" x2="55" y2="220" stroke="#2563eb" stroke-width="4" />
+                        <line x1="250" y1="220" x2="110" y2="78" stroke="#eab308" stroke-width="4" />
+                        <line x1="250" y1="220" x2="200" y2="35" stroke="#ef4444" stroke-width="4" />
+                        <line x1="250" y1="220" x2="300" y2="35" stroke="#eab308" stroke-width="4" />
+                        <!-- Outer Cabins -->
+                        <rect x="242" y="10" width="16" height="16" rx="4" fill="#ef4444" />
+                        <rect x="382" y="68" width="16" height="16" rx="4" fill="#2563eb" />
+                        <rect x="437" y="212" width="16" height="16" rx="4" fill="#ef4444" />
+                        <rect x="382" y="354" width="16" height="16" rx="4" fill="#eab308" />
+                        <rect x="102" y="354" width="16" height="16" rx="4" fill="#2563eb" />
+                        <rect x="47" y="212" width="16" height="16" rx="4" fill="#2563eb" />
+                        <rect x="102" y="68" width="16" height="16" rx="4" fill="#ef4444" />
+                        <rect x="192" y="25" width="16" height="16" rx="4" fill="#eab308" />
+                        <rect x="292" y="25" width="16" height="16" rx="4" fill="#eab308" />
+                        <!-- Skyscraper (Left K stem) -->
+                        <path d="M120,400 L120,150 L160,120 L200,140 L200,400 Z" fill="#2563eb" />
+                        <!-- Skyscraper Windows -->
+                        <line x1="135" y1="160" x2="185" y2="160" stroke="#ffffff" stroke-width="3" />
+                        <line x1="135" y1="185" x2="185" y2="185" stroke="#ffffff" stroke-width="3" />
+                        <line x1="135" y1="210" x2="185" y2="210" stroke="#ffffff" stroke-width="3" />
+                        <line x1="135" y1="235" x2="185" y2="235" stroke="#ffffff" stroke-width="3" />
+                        <line x1="135" y1="260" x2="185" y2="260" stroke="#ffffff" stroke-width="3" />
+                        <line x1="135" y1="285" x2="185" y2="285" stroke="#ffffff" stroke-width="3" />
+                        <line x1="135" y1="310" x2="185" y2="310" stroke="#ffffff" stroke-width="3" />
+                        <line x1="135" y1="335" x2="185" y2="335" stroke="#ffffff" stroke-width="3" />
+                        <line x1="135" y1="360" x2="185" y2="360" stroke="#ffffff" stroke-width="3" />
+                        <!-- Red Diagonal Base K -->
+                        <path d="M210,240 L385,410 L310,410 L210,310 Z" fill="#dc2626" />
+                        <line x1="240" y1="330" x2="300" y2="330" stroke="#ffffff" stroke-width="3" />
+                        <line x1="250" y1="350" x2="310" y2="350" stroke="#ffffff" stroke-width="3" />
+                        <!-- Yellow Location Pin Top K -->
+                        <path d="M210,240 L360,110 L360,200 L260,260 Z" fill="#eab308" />
+                        <path d="M240,240 L360,110 L280,260 Z" fill="#dc2626" opacity="0.6" />
+                        <!-- River Wave Base -->
+                        <path d="M100,430 Q250,380 400,440 Q250,470 100,430 Z" fill="#3b82f6" />
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold text-slate-900 leading-tight">Kinshasa Label</h1>
+                    <p class="text-xs text-slate-500 font-medium">Editorial Calendar & Designer Workflow Studio</p>
+                </div>
+            </div>
+
+            <!-- Header Actions -->
+            <div class="flex items-center space-x-3">
+                <button onclick="openSyncModal()" class="inline-flex items-center px-3 py-1.5 border border-slate-300 shadow-sm text-xs font-semibold rounded-lg text-slate-700 bg-white hover:bg-slate-50 transition">
+                    <i data-lucide="link" class="w-4 h-4 mr-1.5 text-slate-500"></i> Import Google Sheet
+                </button>
+                <button onclick="openPostModal()" class="inline-flex items-center px-4 py-1.5 border border-transparent shadow-sm text-xs font-semibold rounded-lg text-white bg-blue-600 hover:bg-blue-700 transition">
+                    <i data-lucide="plus" class="w-4 h-4 mr-1.5"></i> New Post
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+
+        <!-- SCORECARDS / KPI SUMMARY BAR (CLICKABLE FILTERS) -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+            <div onclick="filterByScorecard('ALL')" id="card-all" class="bg-white p-4 rounded-xl border border-blue-500 ring-2 ring-blue-100 shadow-sm cursor-pointer hover:border-blue-500 transition">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Total Posts</span>
+                    <i data-lucide="layers" class="w-4 h-4 text-slate-400"></i>
+                </div>
+                <div class="mt-2 flex items-baseline justify-between">
+                    <span id="kpi-total" class="text-2xl font-extrabold text-slate-900">0</span>
+                    <span class="text-[10px] text-slate-400">All planned</span>
+                </div>
+            </div>
+
+            <div onclick="filterByScorecard('To Prepare')" id="card-to-prepare" class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm cursor-pointer hover:border-amber-400 transition">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold uppercase tracking-wider text-amber-600">To Prepare</span>
+                    <i data-lucide="clock" class="w-4 h-4 text-amber-500"></i>
+                </div>
+                <div class="mt-2 flex items-baseline justify-between">
+                    <span id="kpi-to-prepare" class="text-2xl font-extrabold text-amber-600">0</span>
+                    <span class="text-[10px] text-slate-400">Draft / Brief</span>
+                </div>
+            </div>
+
+            <div onclick="filterByScorecard('In Progress')" id="card-in-progress" class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm cursor-pointer hover:border-blue-400 transition">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold uppercase tracking-wider text-blue-600">In Progress</span>
+                    <i data-lucide="palette" class="w-4 h-4 text-blue-500"></i>
+                </div>
+                <div class="mt-2 flex items-baseline justify-between">
+                    <span id="kpi-in-progress" class="text-2xl font-extrabold text-blue-600">0</span>
+                    <span class="text-[10px] text-slate-400">Designing</span>
+                </div>
+            </div>
+
+            <div onclick="filterByScorecard('Review Needed')" id="card-review-needed" class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm cursor-pointer hover:border-purple-400 transition">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold uppercase tracking-wider text-purple-600">Under Review</span>
+                    <i data-lucide="file-check" class="w-4 h-4 text-purple-500"></i>
+                </div>
+                <div class="mt-2 flex items-baseline justify-between">
+                    <span id="kpi-review-needed" class="text-2xl font-extrabold text-purple-600">0</span>
+                    <span class="text-[10px] text-slate-400">Client validation</span>
+                </div>
+            </div>
+
+            <div onclick="filterByScorecard('Approved & Ready')" id="card-approved" class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm cursor-pointer hover:border-emerald-400 transition">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold uppercase tracking-wider text-emerald-600">Scheduled</span>
+                    <i data-lucide="check-circle" class="w-4 h-4 text-emerald-500"></i>
+                </div>
+                <div class="mt-2 flex items-baseline justify-between">
+                    <span id="kpi-approved" class="text-2xl font-extrabold text-emerald-600">0</span>
+                    <span class="text-[10px] text-slate-400">Ready to post</span>
+                </div>
+            </div>
+
+            <div onclick="filterByScorecard('VIDEO_FORMATS')" id="card-video" class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm cursor-pointer hover:border-rose-400 transition">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold uppercase tracking-wider text-rose-600">Reels & Videos</span>
+                    <i data-lucide="video" class="w-4 h-4 text-rose-500"></i>
+                </div>
+                <div class="mt-2 flex items-baseline justify-between">
+                    <span id="kpi-video" class="text-2xl font-extrabold text-rose-600">0</span>
+                    <span class="text-[10px] text-slate-400">9:16 Video</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- NAVIGATION VIEW TABS & FILTERS BAR -->
+        <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
+            <!-- View Tabs -->
+            <div class="flex items-center bg-slate-100 p-1 rounded-lg w-full md:w-auto">
+                <button onclick="setView('table')" id="tab-table" class="flex-1 md:flex-initial px-4 py-1.5 text-xs font-bold rounded-md bg-white text-slate-900 shadow-sm transition">
+                    <i data-lucide="table" class="w-3.5 h-3.5 inline mr-1.5"></i> Sheet Table
+                </button>
+                <button onclick="setView('kanban')" id="tab-kanban" class="flex-1 md:flex-initial px-4 py-1.5 text-xs font-bold rounded-md text-slate-600 hover:text-slate-900 transition">
+                    <i data-lucide="kanban" class="w-3.5 h-3.5 inline mr-1.5"></i> Kanban Board
+                </button>
+
+                <button onclick="setView('cards')" id="tab-cards" class="flex-1 md:flex-initial px-4 py-1.5 text-xs font-bold rounded-md text-slate-600 hover:text-slate-900 transition">
+                    <i data-lucide="layout-grid" class="w-3.5 h-3.5 inline mr-1.5"></i> Brief Cards
+                </button>
+                <button onclick="setView('studio')" id="tab-studio" class="flex-1 md:flex-initial px-4 py-1.5 text-xs font-bold rounded-md text-slate-600 hover:text-slate-900 transition">
+                    <i data-lucide="smartphone" class="w-3.5 h-3.5 inline mr-1.5"></i> Designer Studio & Mockup
+                </button>
+            </div>
+
+            <!-- Filters -->
+            <div class="flex items-center space-x-3 w-full md:w-auto justify-end">
+                <div class="relative flex-1 md:w-48">
+                    <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-2.5"></i>
+                    <input type="text" id="search-input" onkeyup="filterPosts()" placeholder="Search posts, copy..." class="w-full pl-9 pr-3 py-1.5 text-xs border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <select id="status-filter" onchange="filterPosts()" class="py-1.5 px-3 text-xs border border-slate-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="ALL">All Statuses</option>
+                    <option value="To Prepare">To Prepare (À préparer)</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Review Needed">Under Review (En validation)</option>
+                    <option value="Approved & Ready">Scheduled (Programmés)</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- VIEW 1: SHEET TABLE VIEW (FULL 16 COLUMNS MATCHING SPREADSHEET) -->
+        <div id="view-table" class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="overflow-x-auto custom-scrollbar">
+                <table class="w-full text-left border-collapse min-w-[1200px]">
+                    <thead>
+                        <tr class="bg-slate-100 text-[11px] font-bold text-slate-600 uppercase tracking-wider border-b border-slate-200">
+                            <th class="py-3 px-3 w-24">Date</th>
+                            <th class="py-3 px-3 w-28">Platform</th>
+                            <th class="py-3 px-3 w-28">Format</th>
+                            <th class="py-3 px-3 w-32">Content Pillar</th>
+                            <th class="py-3 px-3 w-48">Subject / Concept</th>
+                            <th class="py-3 px-3 w-64">Caption & Post Copy</th>
+                            <th class="py-3 px-3 w-64">Designer Visual Brief</th>
+                            <th class="py-3 px-3 w-32">Status</th>
+                            <th class="py-3 px-3 w-24 text-center">Client Check</th>
+                            <th class="py-3 px-3 w-20 text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body" class="divide-y divide-slate-200 text-xs text-slate-700">
+                        <!-- Table rows populated dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- VIEW 2: KANBAN BOARD -->
+        <div id="view-kanban" class="hidden grid grid-cols-1 md:grid-cols-4 gap-4">
+            <!-- To Prepare Column -->
+            <div class="bg-slate-100 p-3 rounded-xl border border-slate-200 flex flex-col h-[700px]">
+                <div class="flex items-center justify-between pb-3 border-b border-slate-200 mb-3">
+                    <span class="text-xs font-bold uppercase text-amber-700">À Préparer / To Prepare</span>
+                    <span id="kanban-count-to-prepare" class="px-2 py-0.5 text-[10px] font-extrabold rounded-full bg-amber-200 text-amber-800">0</span>
+                </div>
+                <div id="kanban-col-to-prepare" class="flex-1 overflow-y-auto space-y-3 custom-scrollbar pr-1"></div>
+            </div>
+
+            <!-- In Progress Column -->
+            <div class="bg-slate-100 p-3 rounded-xl border border-slate-200 flex flex-col h-[700px]">
+                <div class="flex items-center justify-between pb-3 border-b border-slate-200 mb-3">
+                    <span class="text-xs font-bold uppercase text-blue-700">In Progress</span>
+                    <span id="kanban-count-in-progress" class="px-2 py-0.5 text-[10px] font-extrabold rounded-full bg-blue-200 text-blue-800">0</span>
+                </div>
+                <div id="kanban-col-in-progress" class="flex-1 overflow-y-auto space-y-3 custom-scrollbar pr-1"></div>
+            </div>
+
+            <!-- Review Needed Column -->
+            <div class="bg-slate-100 p-3 rounded-xl border border-slate-200 flex flex-col h-[700px]">
+                <div class="flex items-center justify-between pb-3 border-b border-slate-200 mb-3">
+                    <span class="text-xs font-bold uppercase text-purple-700">En Validation / Review</span>
+                    <span id="kanban-count-review-needed" class="px-2 py-0.5 text-[10px] font-extrabold rounded-full bg-purple-200 text-purple-800">0</span>
+                </div>
+                <div id="kanban-col-review-needed" class="flex-1 overflow-y-auto space-y-3 custom-scrollbar pr-1"></div>
+            </div>
+
+            <!-- Approved Column -->
+            <div class="bg-slate-100 p-3 rounded-xl border border-slate-200 flex flex-col h-[700px]">
+                <div class="flex items-center justify-between pb-3 border-b border-slate-200 mb-3">
+                    <span class="text-xs font-bold uppercase text-emerald-700">Programmés / Ready</span>
+                    <span id="kanban-count-approved" class="px-2 py-0.5 text-[10px] font-extrabold rounded-full bg-emerald-200 text-emerald-800">0</span>
+                </div>
+                <div id="kanban-col-approved" class="flex-1 overflow-y-auto space-y-3 custom-scrollbar pr-1"></div>
+            </div>
+        </div>
+
+        <!-- VIEW 3: BRIEF CARDS VIEW -->
+        <div id="view-cards" class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Cards populated dynamically -->
+        </div>
+
+        <!-- VIEW 4: DESIGNER STUDIO & LIVE MOCKUP PREVIEW -->
+        <div id="view-studio" class="hidden bg-white p-6 rounded-xl border border-slate-200 shadow-sm grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <!-- Studio Form & Controls (LHS) -->
+            <div class="lg:col-span-7 space-y-5">
+                <div>
+                    <h3 class="text-base font-bold text-slate-900">Designer Handoff & Platform Preview</h3>
+                    <p class="text-xs text-slate-500">Select a post, upload visual assets, and check how it looks on Instagram, TikTok, or Facebook.</p>
+                </div>
+
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Select Active Post</label>
+                        <select id="studio-post-select" onchange="onStudioPostChange()" class="w-full text-xs p-2.5 border border-slate-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500">
+                            <!-- Options populated dynamically -->
+                        </select>
+                    </div>
+
+                    <!-- Upload Box -->
+                    <div class="border-2 border-dashed border-slate-300 rounded-xl p-6 text-center hover:bg-slate-50 transition cursor-pointer" onclick="document.getElementById('studio-file-input').click()">
+                        <input type="file" id="studio-file-input" onchange="handleDesignerUpload(event)" accept="image/*,video/*" class="hidden">
+                        <i data-lucide="cloud-upload" class="w-8 h-8 text-blue-500 mx-auto mb-2"></i>
+                        <p class="text-xs font-bold text-slate-700">Click to upload visual design asset(s)</p>
+                        <p class="text-[11px] text-slate-400 mt-1">Supports PNG, JPG, MP4 (Square 1:1, Portrait 4:5, Vertical 9:16)</p>
+                    </div>
+
+                    <!-- Brief Detail Block -->
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
+                        <span class="text-[10px] font-bold uppercase text-slate-400">Designer Brief Instructions</span>
+                        <p id="studio-brief-text" class="text-xs text-slate-700 leading-relaxed italic">Select a post to view visual instructions.</p>
+                    </div>
+
+                    <!-- Platform Toggle Buttons -->
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-2">Device Mockup Frame</label>
+                        <div class="flex items-center space-x-2">
+                            <button onclick="setStudioPlatform('instagram')" id="platform-btn-instagram" class="px-3 py-1.5 text-xs font-bold rounded-lg border border-blue-500 bg-blue-50 text-blue-700">Instagram</button>
+                            <button onclick="setStudioPlatform('tiktok')" id="platform-btn-tiktok" class="px-3 py-1.5 text-xs font-bold rounded-lg border border-slate-200 bg-white text-slate-600">TikTok (9:16)</button>
+                            <button onclick="setStudioPlatform('facebook')" id="platform-btn-facebook" class="px-3 py-1.5 text-xs font-bold rounded-lg border border-slate-200 bg-white text-slate-600">Facebook</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Phone Frame Mockup (RHS) -->
+            <div class="lg:col-span-5 flex flex-col items-center justify-center border-t lg:border-t-0 lg:border-l border-slate-200 pt-6 lg:pt-0 lg:pl-6">
+                <!-- Mobile Screen Mockup Container -->
+                <div id="mockup-frame-container" class="w-[320px] bg-black rounded-[40px] p-3 shadow-2xl border-4 border-slate-800 relative">
+                    <!-- Dynamic Aspect Frame -->
+                    <div id="mockup-screen" class="bg-slate-900 rounded-[30px] overflow-hidden relative flex flex-col aspect-4-5">
+                        <!-- Top Header Bar -->
+                        <div class="bg-black/80 backdrop-blur-md px-3 py-2 flex items-center justify-between text-white z-10">
+                            <div class="flex items-center space-x-2">
+                                <div class="w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center text-[10px] font-bold">KL</div>
+                                <span class="text-[11px] font-bold tracking-tight">kinshasalabel</span>
+                            </div>
+                            <i data-lucide="more-horizontal" class="w-4 h-4 text-slate-300"></i>
+                        </div>
+
+                        <!-- Image/Video Screen Area -->
+                        <div id="mockup-media-area" class="flex-1 bg-slate-800 flex items-center justify-center relative overflow-hidden">
+                            <p class="text-xs text-slate-400 text-center px-4">No graphic asset uploaded yet.<br><span class="text-[10px] text-slate-500">Upload an image to preview.</span></p>
+                        </div>
+
+                        <!-- Bottom Caption Overlay -->
+                        <div class="bg-black/90 p-3 text-white z-10 space-y-1">
+                            <div class="flex items-center space-x-3 text-white mb-1">
+                                <i data-lucide="heart" class="w-4 h-4"></i>
+                                <i data-lucide="message-circle" class="w-4 h-4"></i>
+                                <i data-lucide="send" class="w-4 h-4"></i>
+                            </div>
+                            <p id="mockup-caption-preview" class="text-[11px] text-slate-200 line-clamp-2 leading-tight">Caption text preview...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- POST CREATION & EDIT MODAL -->
+    <div id="post-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
+            <!-- Modal Header -->
+            <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
+                <h3 id="modal-title" class="text-sm font-bold text-slate-900">New Publication</h3>
+                <div class="flex items-center space-x-2">
+                    <button type="button" onclick="generateWithAI()" class="inline-flex items-center px-3 py-1.5 text-xs font-bold rounded-lg text-purple-700 bg-purple-100 hover:bg-purple-200 transition">
+                        <i data-lucide="sparkles" class="w-3.5 h-3.5 mr-1.5"></i> Generate with AI (Gemini)
+                    </button>
+                    <button onclick="closePostModal()" class="text-slate-400 hover:text-slate-600 p-1"><i data-lucide="x" class="w-5 h-5"></i></button>
+                </div>
+            </div>
+
+            <!-- Form Body -->
+            <div class="p-6 overflow-y-auto space-y-4 custom-scrollbar">
+                <form id="post-form" onsubmit="savePost(event)" class="space-y-4">
+                    <input type="hidden" id="form-post-id">
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Publication Date</label>
+                            <input type="date" id="form-date" required class="w-full text-xs p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Platform(s)</label>
+                            <select id="form-platform" class="w-full text-xs p-2 border border-slate-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500">
+                                <option value="Facebook & Instagram">Facebook & Instagram</option>
+                                <option value="IG Reel & TikTok">IG Reel & TikTok</option>
+                                <option value="Facebook">Facebook</option>
+                                <option value="Instagram">Instagram</option>
+                                <option value="TikTok">TikTok</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Format</label>
+                            <select id="form-format" class="w-full text-xs p-2 border border-slate-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500">
+                                <option value="Carrousel">Carrousel</option>
+                                <option value="Vidéo courte">Vidéo courte (9:16)</option>
+                                <option value="Image / Carte">Image / Carte</option>
+                                <option value="Image / Texte">Image / Texte</option>
+                                <option value="Post Texte + Infographie">Post Texte + Infographie</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Content Pillar</label>
+                            <select id="form-pillar" class="w-full text-xs p-2 border border-slate-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500">
+                                <option value="Kin Business & Prix">Kin Business & Prix</option>
+                                <option value="Focus Commune">Focus Commune</option>
+                                <option value="Kin Food">Kin Food</option>
+                                <option value="Kin Culture">Kin Culture</option>
+                                <option value="Kin Sécurité">Kin Sécurité</option>
+                                <option value="Jeu / Quiz">Jeu / Quiz</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Workflow Status</label>
+                            <select id="form-status" class="w-full text-xs p-2 border border-slate-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500">
+                                <option value="To Prepare">To Prepare (À préparer)</option>
+                                <option value="In Progress">In Progress</option>
+                                <option value="Review Needed">Under Review (En validation)</option>
+                                <option value="Approved & Ready">Scheduled (Programmés)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Subject / Working Concept Title</label>
+                        <input type="text" id="form-concept" required placeholder="e.g., Price surge on fish and poultry in Gambela market" class="w-full text-xs p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Caption & Copy Details</label>
+                        <textarea id="form-caption" rows="3" placeholder="Full caption text including emojis, call-to-actions, and hashtags..." class="w-full text-xs p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500"></textarea>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Designer Visual Brief</label>
+                        <textarea id="form-brief" rows="3" placeholder="Specific visual instructions: slide breakdown, colors, dimensions (1080x1350), text overlays..." class="w-full text-xs p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500"></textarea>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Website CTA Link / Target Goal</label>
+                            <input type="text" id="form-cta" placeholder="kinshasalabel.com/commune/Gombe" class="w-full text-xs p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Uploaded Asset URL</label>
+                            <input type="text" id="form-asset-url" placeholder="https://..." class="w-full text-xs p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        </div>
+                    </div>
+
+                    <div class="flex items-center space-x-2 pt-2">
+                        <input type="checkbox" id="form-client-validation" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                        <label for="form-client-validation" class="text-xs font-bold text-slate-700">Client / Claude Validation Approved</label>
+                    </div>
+
+                    <!-- Modal Actions -->
+                    <div class="pt-4 border-t border-slate-200 flex items-center justify-end space-x-3">
+                        <button type="button" onclick="closePostModal()" class="px-4 py-2 text-xs font-bold text-slate-600 hover:text-slate-800">Cancel</button>
+                        <button type="submit" class="px-5 py-2 text-xs font-bold rounded-lg text-white bg-blue-600 hover:bg-blue-700 shadow-sm">Save Publication</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- GOOGLE SHEET SYNC MODAL -->
+    <div id="sync-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl">
+            <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+                <h3 class="text-sm font-bold text-slate-900">Import / Sync Google Sheet Data</h3>
+                <button onclick="closeSyncModal()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+
+            <p class="text-xs text-slate-600 leading-relaxed">Paste your published Google Sheet link or raw exported CSV content. The importer automatically detects your column headers and imports your editorial calendar.</p>
+
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Google Sheet Share / Export URL</label>
+                    <input type="url" id="sheet-url-input" placeholder="https://docs.google.com/spreadsheets/d/1fE-NM3f7zNfStXc27DDIzV-cKLgHv-h8veDCtmGq-I8/edit..." class="w-full text-xs p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <div class="relative flex py-1 items-center">
+                    <div class="flex-grow border-t border-slate-200"></div>
+                    <span class="flex-shrink mx-3 text-[10px] text-slate-400 font-bold uppercase">Or paste raw CSV text</span>
+                    <div class="flex-grow border-t border-slate-200"></div>
+                </div>
+
+                <div>
+                    <textarea id="sheet-csv-input" rows="4" placeholder="Date, Jour, Plateforme, Format, Pilier de Contenu, Sujet..." class="w-full text-xs p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500"></textarea>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-end space-x-3 pt-2">
+                <button onclick="closeSyncModal()" class="px-4 py-2 text-xs font-bold text-slate-600 hover:text-slate-800">Cancel</button>
+                <button onclick="importSheetData()" class="px-4 py-2 text-xs font-bold rounded-lg text-white bg-blue-600 hover:bg-blue-700 shadow-sm">Sync Data</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FIREBASE MODULE & APPLICATION SCRIPT -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js";
+        import { getFirestore, collection, onSnapshot, doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
+
+        // Firebase Credentials
+        const firebaseConfig = {
+            apiKey: "AIzaSyB3lEWQTbsH6BRICXAJYAv5qn-IzygOpZM",
+            authDomain: "kinshasa-label-calendar.firebaseapp.com",
+            projectId: "kinshasa-label-calendar",
+            storageBucket: "kinshasa-label-calendar.firebasestorage.app",
+            messagingSenderId: "606732440439",
+            appId: "1:606732440439:web:90da8bd05d6e820ec8c772"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const postsRef = collection(db, "posts");
+
+        // Initial Data matching Kinshasa Label editorial calendar
+        let postsData = [
+            { id: "1", date: "2026-11-09", day: "Monday", platform: "Facebook & Instagram", format: "Carrousel", pillar: "Kin Business & Prix", concept: "Baisse/Hausse des prix : Le panier de la ménagère à Gambela et Marché de la Liberté.", caption: "🛒 Panier de la ménagère à Kinshasa : Les nouveaux prix du surgelé !\n\nDe Gambela au Marché de la Liberté, les prix du poulet et du poisson enregistrent une hausse. Retrouvez notre rapport complet !\n\n👉 Suivez l'évolution sur kinshasalabel.com !", brief: "Carrousel 4 slides (Format 1080x1350px / 4:5 portrait).\n• Slide 1: Photo étal marché Gambela. Titre: FLAMBÉE DES PRIX À KINSHASA !\n• Slide 2: Tableau comparatif.\n• Slide 3: Écarts Gambela vs Liberté.\n• Slide 4: Outro CTA logo Kinshasa Label.", cta: "kinshasalabel.com", status: "To Prepare", clientValidation: false },
+            { id: "2", date: "2026-11-11", day: "Wednesday", platform: "IG Reel & TikTok", format: "Vidéo courte", pillar: "Focus Commune", concept: "Commune Focus - KALAMU : Le berceau de la Rumba Congolaise et des maquis mythiques.", caption: "🎷 Bienvenue à KALAMU, la commune de la musique et de la joie !\n\nDes maquis de Matonge aux coins mythiques de la rumba, Kalamu vibre jour et nuit.\n\n🗳️ Votez sur kinshasalabel.com !", brief: "Format 9:16 (1080x1920px) Reels/TikTok. 15-20s.\n• Montage vidéo dynamique: plans de coupe Matonge.\n• Bande son: Rumba congolaise.\n• Textes incrustés: TOUR DE KIN: KALAMU.", cta: "kinshasalabel.com/commune/kalamu", status: "To Prepare", clientValidation: false },
+            { id: "3", date: "2026-11-13", day: "Friday", platform: "Facebook & Instagram", format: "Image / Carte", pillar: "Kin Food", concept: "Kin Food - Top 3 des terrasses à Gombe : O Poeta, A Casa Mia et sélection de la rédaction.", caption: "🍕 Où manger ce week-end à Gombe ?\n\nDécouvrez notre sélection des meilleures tables du centre des affaires.\n\n📍 Retrouvez leurs adresses sur kinshasalabel.com !", brief: "Format 4:5 (1080x1350px). Style Guide Gastronomique: 3 encadrés photos plats et terrasses chic à Gombe. Badges dorés 5 étoiles.", cta: "kinshasalabel.com/commune/Gombe", status: "To Prepare", clientValidation: false },
+            { id: "4", date: "2026-11-15", day: "Sunday", platform: "Facebook & Instagram", format: "Image / Texte", pillar: "Kin Culture", concept: "Kin Culture : Zoom sur l'exposition 'Rencontre' d'Aïcha Muteba à l'Hôtel Memling.", caption: "🎨 Quand l'art fait dialoguer les mémoires à Kinshasa...\n\nExposition « Rencontre » par Aïcha Muteba à l'Hôtel Memling.\n\n📲 Suivez toute l'actualité sur kinshasalabel.com !", brief: "Format 4:5 (1080x1350px). Photo haute définition d'une œuvre majeure d'Aïcha Muteba sur fond crème/noir texturé.", cta: "kinshasalabel.com", status: "To Prepare", clientValidation: false },
+            { id: "5", date: "2026-11-16", day: "Monday", platform: "Facebook", format: "Post Texte + Infographie", pillar: "Kin Sécurité", concept: "Kin Sécurité : Les numéros d'urgence utiles et commissariats de police par commune.", caption: "🚨 Urgence ou sécurité à Kinshasa : Gardez les bons numéros à portée de hand !\n\nLocalisez le commissariat le plus proche.\n\n📲 Téléchargez la fiche sur kinshasalabel.com !", brief: "Format Infographie Facebook (1200x630px). Style Fiche Réflexe d'Urgence: bleu marine, blanc et rouge alerte.", cta: "kinshasalabel.com", status: "To Prepare", clientValidation: false },
+            { id: "6", date: "2026-11-18", day: "Wednesday", platform: "IG Reel & TikTok", format: "Vidéo courte", pillar: "Jeu / Quiz", concept: "'Tu connais Kin ?' : Devine la commune à partir de ce lieu historique !", caption: "🤔 Test de Kinois : Es-tu un vrai connaisseur de Kin ?\n\nDevine dans quelle commune se trouve ce lieu emblématique !\n\n🗺️ Explore les 24 communes sur kinshasalabel.com !", brief: "Format vertical 9:16 (1080x1920px). Vidéo quiz interactive. Compte à rebours animé 3-2-1.", cta: "kinshasalabel.com", status: "To Prepare", clientValidation: false }
+        ];
+
+        let activeScorecardFilter = 'ALL';
+        let currentStudioPostId = "1";
+        let currentMockupPlatform = 'instagram';
+
+        // Realtime Listener
+        onSnapshot(postsRef, (snapshot) => {
+            if (!snapshot.empty) {
+                let remotePosts = [];
+                snapshot.forEach((doc) => remotePosts.push(doc.data()));
+                postsData = remotePosts;
+                renderAll();
+            }
+        });
+
+        // Global Window Functions
+        window.setView = function(viewName) {
+            ['table', 'kanban', 'cards', 'studio'].forEach(v => {
+                document.getElementById(`view-${v}`).classList.add('hidden');
+                document.getElementById(`tab-${v}`).className = "flex-1 md:flex-initial px-4 py-1.5 text-xs font-bold rounded-md text-slate-600 hover:text-slate-900 transition";
+            });
+            document.getElementById(`view-${viewName}`).classList.remove('hidden');
+            document.getElementById(`tab-${viewName}`).className = "flex-1 md:flex-initial px-4 py-1.5 text-xs font-bold rounded-md bg-white text-slate-900 shadow-sm transition";
+        };
+
+        window.filterByScorecard = function(statusKey) {
+            activeScorecardFilter = statusKey;
+            document.querySelectorAll('[id^="card-"]').forEach(c => c.className = "bg-white p-4 rounded-xl border border-slate-200 shadow-sm cursor-pointer hover:border-slate-400 transition");
+            const activeCardId = statusKey === 'ALL' ? 'card-all' : statusKey === 'VIDEO_FORMATS' ? 'card-video' : `card-${statusKey.toLowerCase().replace(/[^a-z0-9]/g, '-')}`;
+            const cardEl = document.getElementById(activeCardId);
+            if (cardEl) cardEl.className = "bg-white p-4 rounded-xl border border-blue-500 ring-2 ring-blue-100 shadow-sm cursor-pointer transition";
+            filterPosts();
+        };
+
+        function normalizeStatus(s) {
+            if (!s) return 'To Prepare';
+            const lower = s.toLowerCase();
+            if (lower.includes('préparer') || lower.includes('preparer') || lower.includes('prepare')) return 'To Prepare';
+            if (lower.includes('progress') || lower.includes('cours')) return 'In Progress';
+            if (lower.includes('validation') || lower.includes('review') || lower.includes('needed')) return 'Review Needed';
+            if (lower.includes('programmé') || lower.includes('approved') || lower.includes('ready')) return 'Approved & Ready';
+            return 'To Prepare';
+        }
+
+        window.filterPosts = function() {
+            const searchVal = document.getElementById('search-input').value.toLowerCase();
+            const selectVal = document.getElementById('status-filter').value;
+            
+            const filtered = postsData.filter(p => {
+                const normStatus = normalizeStatus(p.status);
+                const matchesSearch = (p.concept || '').toLowerCase().includes(searchVal) || (p.caption || '').toLowerCase().includes(searchVal);
+                let matchesStatus = true;
+                if (activeScorecardFilter === 'VIDEO_FORMATS') {
+                    matchesStatus = (p.format || '').toLowerCase().includes('vidéo') || (p.format || '').toLowerCase().includes('video');
+                } else if (activeScorecardFilter !== 'ALL') {
+                    matchesStatus = normStatus === normalizeStatus(activeScorecardFilter);
+                } else if (selectVal !== 'ALL') {
+                    matchesStatus = normStatus === normalizeStatus(selectVal);
+                }
+                return matchesSearch && matchesStatus;
+            });
+
+            renderTable(filtered);
+            renderKanban(filtered);
+            renderCards(filtered);
+            updateKPIs();
+        };
+
+        function updateKPIs() {
+            document.getElementById('kpi-total').innerText = postsData.length;
+            document.getElementById('kpi-to-prepare').innerText = postsData.filter(p => normalizeStatus(p.status) === 'To Prepare').length;
+            document.getElementById('kpi-in-progress').innerText = postsData.filter(p => normalizeStatus(p.status) === 'In Progress').length;
+            document.getElementById('kpi-review-needed').innerText = postsData.filter(p => normalizeStatus(p.status) === 'Review Needed').length;
+            document.getElementById('kpi-approved').innerText = postsData.filter(p => normalizeStatus(p.status) === 'Approved & Ready').length;
+            document.getElementById('kpi-video').innerText = postsData.filter(p => (p.format || '').toLowerCase().includes('vidéo')).length;
+        }
+
+        function renderTable(posts) {
+            const tbody = document.getElementById('table-body');
+            tbody.innerHTML = posts.map(p => `
+                <tr class="hover:bg-slate-50 transition">
+                    <td class="py-3 px-3 font-semibold text-slate-900">${p.date}</td>
+                    <td class="py-3 px-3">${p.platform}</td>
+                    <td class="py-3 px-3"><span class="px-2 py-0.5 rounded bg-slate-100 text-[10px] font-bold text-slate-600">${p.format}</span></td>
+                    <td class="py-3 px-3"><span class="px-2 py-0.5 rounded bg-blue-50 text-[10px] font-bold text-blue-700">${p.pillar}</span></td>
+                    <td class="py-3 px-3 font-medium">${p.concept}</td>
+                    <td class="py-3 px-3 text-[11px] text-slate-500 line-clamp-2">${p.caption}</td>
+                    <td class="py-3 px-3 text-[11px] text-slate-500 italic line-clamp-2">${p.brief}</td>
+                    <td class="py-3 px-3"><span class="px-2 py-1 rounded-full text-[10px] font-extrabold ${getStatusBadgeClass(p.status)}">${normalizeStatus(p.status)}</span></td>
+                    <td class="py-3 px-3 text-center">${p.clientValidation ? '✅' : '⏳'}</td>
+                    <td class="py-3 px-3 text-right">
+                        <button onclick="openPostModal('${p.id}')" class="text-blue-600 hover:text-blue-800 p-1"><i data-lucide="edit" class="w-4 h-4"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function renderKanban(posts) {
+            const cols = { 'To Prepare': 'kanban-col-to-prepare', 'In Progress': 'kanban-col-in-progress', 'Review Needed': 'kanban-col-review-needed', 'Approved & Ready': 'kanban-col-approved' };
+            Object.values(cols).forEach(id => document.getElementById(id).innerHTML = '');
+
+            posts.forEach(p => {
+                const norm = normalizeStatus(p.status);
+                const container = document.getElementById(cols[norm] || cols['To Prepare']);
+                if (container) {
+                    container.innerHTML += `
+                        <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-sm space-y-2 hover:shadow-md transition">
+                            <div class="flex items-center justify-between text-[10px] text-slate-400 font-bold">
+                                <span>${p.date}</span>
+                                <span>${p.platform}</span>
+                            </div>
+                            <h4 class="text-xs font-bold text-slate-900 leading-snug">${p.concept}</h4>
+                            <p class="text-[11px] text-slate-500 italic line-clamp-2">${p.brief}</p>
+                            <div class="flex items-center justify-between pt-2 border-t border-slate-100">
+                                <span class="px-1.5 py-0.5 rounded bg-slate-100 text-[9px] font-bold">${p.format}</span>
+                                <button onclick="openPostModal('${p.id}')" class="text-xs font-bold text-blue-600">Edit</button>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+            ['To Prepare', 'In Progress', 'Review Needed', 'Approved & Ready'].forEach(k => {
+                const cntEl = document.getElementById(`kanban-count-${k.toLowerCase().replace(/[^a-z0-9]/g, '-')}`);
+                if (cntEl) cntEl.innerText = posts.filter(p => normalizeStatus(p.status) === k).length;
+            });
+        }
+
+        function renderCards(posts) {
+            const container = document.getElementById('view-cards');
+            container.innerHTML = posts.map(p => `
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="px-2 py-0.5 rounded bg-blue-50 text-[10px] font-bold text-blue-700">${p.pillar}</span>
+                        <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold ${getStatusBadgeClass(p.status)}">${normalizeStatus(p.status)}</span>
+                    </div>
+                    <h3 class="text-sm font-bold text-slate-900">${p.concept}</h3>
+                    <p class="text-xs text-slate-600 line-clamp-3">${p.caption}</p>
+                    <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-100">
+                        <span class="text-[9px] font-bold uppercase text-slate-400 block mb-1">Brief</span>
+                        <p class="text-[11px] text-slate-600 italic line-clamp-2">${p.brief}</p>
+                    </div>
+                    <div class="flex items-center justify-between pt-2">
+                        <span class="text-[10px] text-slate-400 font-bold">${p.date} • ${p.platform}</span>
+                        <button onclick="openPostModal('${p.id}')" class="text-xs font-bold text-blue-600 hover:underline">Edit Brief</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function getStatusBadgeClass(s) {
+            const norm = normalizeStatus(s);
+            if (norm === 'To Prepare') return 'bg-amber-100 text-amber-800';
+            if (norm === 'In Progress') return 'bg-blue-100 text-blue-800';
+            if (norm === 'Review Needed') return 'bg-purple-100 text-purple-800';
+            return 'bg-emerald-100 text-emerald-800';
+        }
+
+        function renderStudioSelect() {
+            const select = document.getElementById('studio-post-select');
+            select.innerHTML = postsData.map(p => `<option value="${p.id}">${p.date} - ${p.concept}</option>`).join('');
+            if (postsData.length > 0) onStudioPostChange();
+        }
+
+        window.onStudioPostChange = function() {
+            const val = document.getElementById('studio-post-select').value;
+            currentStudioPostId = val;
+            const post = postsData.find(p => p.id === val);
+            if (post) {
+                document.getElementById('studio-brief-text').innerText = post.brief || 'No visual brief specified.';
+                document.getElementById('mockup-caption-preview').innerText = post.caption || '';
+                if (post.assetUrl) {
+                    document.getElementById('mockup-media-area').innerHTML = `<img src="${post.assetUrl}" class="w-full h-full object-cover">`;
+                } else {
+                    document.getElementById('mockup-media-area').innerHTML = `<p class="text-xs text-slate-400 text-center px-4">No graphic asset uploaded yet.</p>`;
+                }
+            }
+        };
+
+        window.setStudioPlatform = function(platform) {
+            currentMockupPlatform = platform;
+            const screen = document.getElementById('mockup-screen');
+            screen.className = platform === 'tiktok' ? 'bg-slate-900 rounded-[30px] overflow-hidden relative flex flex-col aspect-9-16' : 'bg-slate-900 rounded-[30px] overflow-hidden relative flex flex-col aspect-4-5';
+        };
+
+        window.handleDesignerUpload = function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const url = URL.createObjectURL(file);
+                document.getElementById('mockup-media-area').innerHTML = `<img src="${url}" class="w-full h-full object-cover">`;
+                const post = postsData.find(p => p.id === currentStudioPostId);
+                if (post) {
+                    post.assetUrl = url;
+                    post.status = "Review Needed";
+                    setDoc(doc(db, "posts", post.id), post);
+                }
+            }
+        };
+
+        window.openPostModal = function(id = null) {
+            const form = document.getElementById('post-form');
+            form.reset();
+            if (id) {
+                const p = postsData.find(x => x.id === id);
+                if (p) {
+                    document.getElementById('form-post-id').value = p.id;
+                    document.getElementById('form-date').value = p.date;
+                    document.getElementById('form-platform').value = p.platform;
+                    document.getElementById('form-format').value = p.format;
+                    document.getElementById('form-pillar').value = p.pillar;
+                    document.getElementById('form-status').value = normalizeStatus(p.status);
+                    document.getElementById('form-concept').value = p.concept;
+                    document.getElementById('form-caption').value = p.caption;
+                    document.getElementById('form-brief').value = p.brief;
+                    document.getElementById('form-cta').value = p.cta || '';
+                    document.getElementById('form-asset-url').value = p.assetUrl || '';
+                    document.getElementById('form-client-validation').checked = !!p.clientValidation;
+                }
+            } else {
+                document.getElementById('form-post-id').value = Date.now().toString();
+            }
+            document.getElementById('post-modal').classList.remove('hidden');
+        };
+
+        window.closePostModal = () => document.getElementById('post-modal').classList.add('hidden');
+        window.openSyncModal = () => document.getElementById('sync-modal').classList.remove('hidden');
+        window.closeSyncModal = () => document.getElementById('sync-modal').classList.add('hidden');
+
+        window.savePost = function(e) {
+            e.preventDefault();
+            const id = document.getElementById('form-post-id').value;
+            const post = {
+                id,
+                date: document.getElementById('form-date').value,
+                platform: document.getElementById('form-platform').value,
+                format: document.getElementById('form-format').value,
+                pillar: document.getElementById('form-pillar').value,
+                status: document.getElementById('form-status').value,
+                concept: document.getElementById('form-concept').value,
+                caption: document.getElementById('form-caption').value,
+                brief: document.getElementById('form-brief').value,
+                cta: document.getElementById('form-cta').value,
+                assetUrl: document.getElementById('form-asset-url').value,
+                clientValidation: document.getElementById('form-client-validation').checked
+            };
+            setDoc(doc(db, "posts", id), post);
+            closePostModal();
+        };
+
+        window.importSheetData = async function() {
+            const url = document.getElementById('sheet-url-input').value;
+            const csvText = document.getElementById('sheet-csv-input').value;
+
+            let raw = csvText;
+            if (url) {
+                try {
+                    let fetchUrl = url;
+                    if (url.includes('/edit')) fetchUrl = url.replace(/\/edit.*$/, '/export?format=csv');
+                    const res = await fetch(fetchUrl);
+                    raw = await res.text();
+                } catch(e) {
+                    alert('Could not fetch URL directly. Please paste CSV text below.');
+                    return;
+                }
+            }
+
+            if (raw) {
+                const lines = raw.split('\n').filter(l => l.trim() !== '');
+                let startIdx = 0;
+                for (let i = 0; i < lines.length; i++) {
+                    if (lines[i].toLowerCase().includes('date') && (lines[i].toLowerCase().includes('format') || lines[i].toLowerCase().includes('sujet'))) {
+                        startIdx = i + 1;
+                        break;
+                    }
+                }
+
+                lines.slice(startIdx).forEach((line, index) => {
+                    const cols = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(c => c.replace(/^"|"$/g, '').trim());
+                    if (cols.length >= 4 && cols[0]) {
+                        const newPost = {
+                            id: (Date.now() + index).toString(),
+                            date: cols[0] || '2026-11-01',
+                            day: cols[1] || '',
+                            platform: cols[2] || 'Facebook & Instagram',
+                            format: cols[3] || 'Carrousel',
+                            pillar: cols[4] || 'Kin Business & Prix',
+                            concept: cols[5] || 'Concept item',
+                            caption: cols[6] || '',
+                            brief: cols[7] || '',
+                            cta: cols[8] || '',
+                            status: cols[9] || 'To Prepare',
+                            clientValidation: false
+                        };
+                        setDoc(doc(db, "posts", newPost.id), newPost);
+                    }
+                });
+                closeSyncModal();
+            }
+        };
+
+        function renderAll() {
+            filterPosts();
+            renderStudioSelect();
+        }
+
+        renderAll();
+        lucide.createIcons();
+    </script>
+</body>
+</html>

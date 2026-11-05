@@ -200,7 +200,7 @@
                             <th class="py-3 px-3 w-64">Designer Visual Brief</th>
                             <th class="py-3 px-3 w-32">Status</th>
                             <th class="py-3 px-3 w-24 text-center">Client Check</th>
-                            <th class="py-3 px-3 w-20 text-right">Actions</th>
+                            <th class="py-3 px-3 w-24 text-right">Actions</th>
                         </tr>
                     </thead>
                     <tbody id="table-body" class="divide-y divide-slate-200 text-xs text-slate-700">
@@ -408,9 +408,14 @@
                         <label for="form-client-validation" class="text-xs font-bold text-slate-700">Client Validation Approved</label>
                     </div>
 
-                    <div class="pt-4 border-t border-slate-200 flex items-center justify-end space-x-3">
-                        <button type="button" onclick="closePostModal()" class="px-4 py-2 text-xs font-bold text-slate-600 hover:text-slate-800">Cancel</button>
-                        <button type="submit" class="px-5 py-2 text-xs font-bold rounded-lg text-white bg-blue-600 hover:bg-blue-700 shadow-sm">Save Publication</button>
+                    <div class="pt-4 border-t border-slate-200 flex items-center justify-between">
+                        <button type="button" id="btn-delete-modal" onclick="deletePostFromModal()" class="px-4 py-2 text-xs font-bold text-red-600 hover:text-red-800 border border-red-200 hover:border-red-300 rounded-lg transition flex items-center">
+                            <i data-lucide="trash-2" class="w-3.5 h-3.5 mr-1.5"></i> Delete Post
+                        </button>
+                        <div class="flex items-center space-x-3">
+                            <button type="button" onclick="closePostModal()" class="px-4 py-2 text-xs font-bold text-slate-600 hover:text-slate-800">Cancel</button>
+                            <button type="submit" class="px-5 py-2 text-xs font-bold rounded-lg text-white bg-blue-600 hover:bg-blue-700 shadow-sm">Save Publication</button>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -454,7 +459,7 @@
     <!-- FIREBASE MODULE & APPLICATION SCRIPT -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js";
-        import { getFirestore, collection, onSnapshot, doc, setDoc } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
+        import { getFirestore, collection, onSnapshot, doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyB3lEWQTbsH6BRICXAJYAv5qn-IzygOpZM",
@@ -569,7 +574,10 @@
                     <td class="py-3 px-3"><span class="px-2 py-1 rounded-full text-[10px] font-extrabold ${getStatusBadgeClass(p.status)}">${normalizeStatus(p.status)}</span></td>
                     <td class="py-3 px-3 text-center">${p.clientValidation ? '✅' : '⏳'}</td>
                     <td class="py-3 px-3 text-right">
-                        <button onclick="openPostModal('${p.id}')" class="text-blue-600 hover:text-blue-800 p-1"><i data-lucide="edit" class="w-4 h-4"></i></button>
+                        <div class="flex items-center justify-end space-x-1">
+                            <button onclick="openPostModal('${p.id}')" title="Edit Post" class="text-blue-600 hover:text-blue-800 p-1 rounded hover:bg-blue-50 transition"><i data-lucide="edit" class="w-4 h-4"></i></button>
+                            <button onclick="deletePost('${p.id}')" title="Delete Line" class="text-red-500 hover:text-red-700 p-1 rounded hover:bg-red-50 transition"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                        </div>
                     </td>
                 </tr>
             `).join('');
@@ -594,7 +602,10 @@
                             <p class="text-[11px] text-slate-500 italic line-clamp-2">${p.brief}</p>
                             <div class="flex items-center justify-between pt-2 border-t border-slate-100">
                                 <span class="px-1.5 py-0.5 rounded bg-slate-100 text-[9px] font-bold">${p.format}</span>
-                                <button onclick="openPostModal('${p.id}')" class="text-xs font-bold text-blue-600">Edit</button>
+                                <div class="flex items-center space-x-2">
+                                    <button onclick="openPostModal('${p.id}')" class="text-xs font-bold text-blue-600 hover:underline">Edit</button>
+                                    <button onclick="deletePost('${p.id}')" class="text-xs font-bold text-red-500 hover:underline">Delete</button>
+                                </div>
                             </div>
                         </div>
                     `;
@@ -622,7 +633,10 @@
                     </div>
                     <div class="flex items-center justify-between pt-2">
                         <span class="text-[10px] text-slate-400 font-bold">${p.date} • ${p.platform}</span>
-                        <button onclick="openPostModal('${p.id}')" class="text-xs font-bold text-blue-600 hover:underline">Edit Brief</button>
+                        <div class="flex items-center space-x-3">
+                            <button onclick="openPostModal('${p.id}')" class="text-xs font-bold text-blue-600 hover:underline">Edit Brief</button>
+                            <button onclick="deletePost('${p.id}')" class="text-xs font-bold text-red-500 hover:underline">Delete</button>
+                        </div>
                     </div>
                 </div>
             `).join('');
@@ -680,9 +694,27 @@
             }
         };
 
+        window.deletePost = function(id) {
+            const p = postsData.find(x => x.id === id);
+            const titleStr = p ? (p.concept || p.date) : 'this publication line';
+            if (confirm(`Are you sure you want to delete "${titleStr}"?`)) {
+                deleteDoc(doc(db, "posts", id));
+            }
+        };
+
+        window.deletePostFromModal = function() {
+            const id = document.getElementById('form-post-id').value;
+            if (id) {
+                window.deletePost(id);
+                closePostModal();
+            }
+        };
+
         window.openPostModal = function(id = null) {
             const form = document.getElementById('post-form');
             form.reset();
+            const delBtn = document.getElementById('btn-delete-modal');
+
             if (id) {
                 const p = postsData.find(x => x.id === id);
                 if (p) {
@@ -698,11 +730,14 @@
                     document.getElementById('form-cta').value = p.cta || '';
                     document.getElementById('form-asset-url').value = p.assetUrl || '';
                     document.getElementById('form-client-validation').checked = !!p.clientValidation;
+                    if (delBtn) delBtn.classList.remove('hidden');
                 }
             } else {
                 document.getElementById('form-post-id').value = "post_" + Date.now();
+                if (delBtn) delBtn.classList.add('hidden');
             }
             document.getElementById('post-modal').classList.remove('hidden');
+            lucide.createIcons();
         };
 
         window.closePostModal = () => document.getElementById('post-modal').classList.add('hidden');

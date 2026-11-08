@@ -276,12 +276,12 @@
         <div id="view-cards" class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         </div>
 
-        <!-- VIEW 4: DESIGNER STUDIO & LIVE MOCKUP PREVIEW -->
+        <!-- VIEW 4: DESIGNER STUDIO & DYNAMIC PREVIEW MOCKUP -->
         <div id="view-studio" class="hidden bg-white p-6 rounded-xl border border-slate-200 shadow-sm grid grid-cols-1 lg:grid-cols-12 gap-8">
             <div class="lg:col-span-7 space-y-5">
                 <div>
                     <h3 class="text-base font-bold text-slate-900">Designer Handoff & Mockup Studio</h3>
-                    <p class="text-xs text-slate-500">Select a post to review guidelines, inspect format aspect ratios, upload single/carousel image or Reel video assets, and submit for client review.</p>
+                    <p class="text-xs text-slate-500">Select a post to view format specifications and preview dimensions automatically auto-fit by target platform.</p>
                 </div>
 
                 <div class="space-y-4">
@@ -291,19 +291,29 @@
                         </select>
                     </div>
 
-                    <!-- FORMAT & DETAILS HIGHLIGHT CARD -->
+                    <!-- FORMAT & PLATFORM RATIO INDICATOR -->
                     <div class="bg-blue-50 p-4 rounded-xl border border-blue-200 flex items-center justify-between">
                         <div>
-                            <span class="text-[10px] font-bold uppercase text-blue-500 block">Selected Format & Aspect Ratio</span>
-                            <span id="studio-format-badge" class="text-xs font-extrabold text-blue-900">Vidéo courte (9:16)</span>
+                            <span class="text-[10px] font-bold uppercase text-blue-500 block">Selected Platform & Format</span>
+                            <span id="studio-format-badge" class="text-xs font-extrabold text-blue-900">Facebook & Instagram • Carrousel</span>
                         </div>
-                        <span id="studio-ratio-indicator" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-blue-600 text-white uppercase tracking-wider">9:16 Vertical</span>
+                        <span id="studio-ratio-indicator" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-blue-600 text-white uppercase tracking-wider">4:5 Portrait</span>
+                    </div>
+
+                    <!-- PLATFORM OVERRIDE TOGGLE BUTTONS -->
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-2">Adjust Preview Target Platform Dimensions</label>
+                        <div class="flex items-center space-x-2">
+                            <button onclick="setStudioPlatform('Instagram')" id="btn-platform-instagram" class="px-3.5 py-1.5 text-xs font-bold rounded-lg border border-blue-600 bg-blue-50 text-blue-700 transition">Instagram (4:5 / 9:16)</button>
+                            <button onclick="setStudioPlatform('TikTok')" id="btn-platform-tiktok" class="px-3.5 py-1.5 text-xs font-bold rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 transition">TikTok (9:16)</button>
+                            <button onclick="setStudioPlatform('Facebook')" id="btn-platform-facebook" class="px-3.5 py-1.5 text-xs font-bold rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 transition">Facebook (16:9 / 4:5)</button>
+                        </div>
                     </div>
 
                     <!-- MULTI-FILE / VIDEO UPLOAD BOX -->
                     <div class="border-2 border-dashed border-slate-300 rounded-xl p-6 text-center hover:bg-slate-50 transition cursor-pointer" onclick="document.getElementById('studio-file-input').click()">
                         <input type="file" id="studio-file-input" onchange="handleDesignerUpload(event)" accept="image/*,video/*" multiple class="hidden">
-                        <i data-lucide="video-or-image" id="upload-icon-box" class="w-8 h-8 text-blue-500 mx-auto mb-2"></i>
+                        <i data-lucide="cloud-upload" id="upload-icon-box" class="w-8 h-8 text-blue-500 mx-auto mb-2"></i>
                         <p class="text-xs font-bold text-slate-700">Click to upload design asset(s)</p>
                         <p id="upload-hint-text" class="text-[11px] text-slate-400 mt-1">PNG, JPG, or MP4 Video for Reels</p>
                     </div>
@@ -335,17 +345,17 @@
                 </div>
             </div>
 
-            <!-- INTERACTIVE CAROUSEL & REEL VIDEO MOCKUP SCREEN -->
+            <!-- DYNAMIC ASPECT PREVIEW MOCKUP SCREEN -->
             <div class="lg:col-span-5 flex flex-col items-center justify-center border-t lg:border-t-0 lg:border-l border-slate-200 pt-6 lg:pt-0 lg:pl-6">
-                <div id="mockup-frame-container" class="w-[320px] bg-black rounded-[40px] p-3 shadow-2xl border-4 border-slate-800 relative">
-                    <div id="mockup-screen" class="bg-slate-900 rounded-[30px] overflow-hidden relative flex flex-col aspect-9-16 transition-all duration-300">
+                <div id="mockup-frame-container" class="w-[320px] bg-black rounded-[40px] p-3 shadow-2xl border-4 border-slate-800 relative transition-all duration-300">
+                    <div id="mockup-screen" class="bg-slate-900 rounded-[30px] overflow-hidden relative flex flex-col aspect-4-5 transition-all duration-300">
                         <!-- HEADER OVERLAY -->
                         <div class="bg-black/80 backdrop-blur-md px-3 py-2 flex items-center justify-between text-white z-10">
                             <div class="flex items-center space-x-2">
                                 <div class="w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center text-[10px] font-bold">KL</div>
                                 <span class="text-[11px] font-bold tracking-tight">kinshasalabel</span>
                             </div>
-                            <span id="mockup-format-pill" class="text-[9px] font-bold px-2 py-0.5 rounded-full bg-rose-600 text-white">REEL 9:16</span>
+                            <span id="mockup-format-pill" class="text-[9px] font-bold px-2 py-0.5 rounded-full bg-blue-600 text-white uppercase">INSTAGRAM 4:5</span>
                         </div>
 
                         <!-- MEDIA DISPLAY AREA -->
@@ -568,9 +578,9 @@
         let currentStudioPostId = "";
         let currentSlideIndex = 0;
         let clientSlideIndices = {};
-        let currentUserRole = "designer"; // creator | designer | client
+        let currentUserRole = "designer"; 
+        let currentStudioPlatformOverride = "";
 
-        // SAMPLE DEMO REEL VIDEO URL FOR MOCKUP TESTING IF NONE UPLOADED
         const SAMPLE_REEL_URL = "https://assets.mixkit.co/videos/preview/mixkit-african-city-street-with-traffic-40742-large.mp4";
 
         window.onRoleChange = function() {
@@ -820,6 +830,22 @@
             `}).join('');
         }
 
+        function getPlatformAspectStyle(platformStr, formatStr) {
+            const plat = (platformStr || '').toLowerCase();
+            const fmt = (formatStr || '').toLowerCase();
+
+            if (fmt.includes('vidéo') || fmt.includes('video') || fmt.includes('reel') || plat.includes('tiktok')) {
+                return { ratioClass: 'aspect-9-16', ratioText: '9:16 Vertical Video', bgPill: 'bg-rose-600', pillText: 'REEL 9:16' };
+            }
+            if (plat.includes('facebook') && !plat.includes('instagram')) {
+                return { ratioClass: 'aspect-16-9', ratioText: '16:9 Landscape Feed', bgPill: 'bg-blue-700', pillText: 'FACEBOOK 16:9' };
+            }
+            if (fmt.includes('carrousel')) {
+                return { ratioClass: 'aspect-4-5', ratioText: '4:5 Portrait Deck', bgPill: 'bg-purple-600', pillText: 'CAROUSEL 4:5' };
+            }
+            return { ratioClass: 'aspect-4-5', ratioText: '4:5 Portrait Feed', bgPill: 'bg-blue-600', pillText: 'POST 4:5' };
+        }
+
         function renderClientPortal() {
             const container = document.getElementById('client-review-grid');
             const pendingPosts = postsData.filter(p => normalizeStatus(p.status) === 'Review Needed' || getPostAssets(p).length > 0);
@@ -838,11 +864,12 @@
                 const idx = clientSlideIndices[p.id] || 0;
                 const currentAsset = assets[idx] || assets[0] || null;
                 const isVideo = isVideoFormat(p.format);
+                const aspectConfig = getPlatformAspectStyle(p.platform, p.format);
 
                 return `
                 <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col justify-between">
                     <div>
-                        <div class="bg-slate-900 h-64 flex items-center justify-center relative group">
+                        <div class="bg-slate-900 ${aspectConfig.ratioClass} max-h-[380px] w-full flex items-center justify-center relative group overflow-hidden">
                             ${isVideo ? `
                                 <video src="${currentAsset || SAMPLE_REEL_URL}" controls autoplay loop muted class="w-full h-full object-cover"></video>
                             ` : currentAsset ? `
@@ -922,7 +949,7 @@
 
         function renderStudioSelect() {
             const select = document.getElementById('studio-post-select');
-            select.innerHTML = postsData.map(p => `<option value="${p.id}">${p.date} - ${p.concept} (${p.format})</option>`).join('');
+            select.innerHTML = postsData.map(p => `<option value="${p.id}">${p.date} - ${p.concept} (${p.platform})</option>`).join('');
             if (postsData.length > 0 && !currentStudioPostId) {
                 currentStudioPostId = postsData[0].id;
             }
@@ -931,6 +958,19 @@
             }
             onStudioPostChange();
         }
+
+        window.setStudioPlatform = function(platformName) {
+            currentStudioPlatformOverride = platformName;
+            ['instagram', 'tiktok', 'facebook'].forEach(p => {
+                const btn = document.getElementById(`btn-platform-${p}`);
+                if (p === platformName.toLowerCase()) {
+                    btn.className = "px-3.5 py-1.5 text-xs font-bold rounded-lg border border-blue-600 bg-blue-50 text-blue-700 transition";
+                } else {
+                    btn.className = "px-3.5 py-1.5 text-xs font-bold rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 transition";
+                }
+            });
+            onStudioPostChange();
+        };
 
         window.onStudioPostChange = function() {
             const val = document.getElementById('studio-post-select').value;
@@ -942,41 +982,31 @@
                 document.getElementById('studio-brief-text').innerText = post.brief || 'No visual brief specified.';
                 document.getElementById('mockup-caption-preview').innerText = post.caption || '';
                 
-                // ADJUST ASPECT RATIO & BADGES ACCORDING TO FORMAT
-                const isVideo = isVideoFormat(post.format);
+                const activePlatform = currentStudioPlatformOverride || post.platform;
+                const aspectConfig = getPlatformAspectStyle(activePlatform, post.format);
+
                 const screen = document.getElementById('mockup-screen');
                 const formatBadge = document.getElementById('studio-format-badge');
                 const ratioIndicator = document.getElementById('studio-ratio-indicator');
                 const mockupPill = document.getElementById('mockup-format-pill');
                 const uploadHint = document.getElementById('upload-hint-text');
 
-                formatBadge.innerText = post.format;
-                if (isVideo) {
-                    screen.className = "bg-slate-900 rounded-[30px] overflow-hidden relative flex flex-col aspect-9-16 transition-all duration-300";
-                    ratioIndicator.innerText = "9:16 Vertical Video";
-                    ratioIndicator.className = "px-2.5 py-1 rounded-md text-[10px] font-bold bg-rose-600 text-white uppercase tracking-wider";
-                    mockupPill.innerText = "REEL 9:16";
-                    mockupPill.className = "text-[9px] font-bold px-2 py-0.5 rounded-full bg-rose-600 text-white";
-                    uploadHint.innerText = "Upload MP4 / Video asset for 9:16 Reel";
-                } else if ((post.format || '').toLowerCase().includes('carrousel')) {
-                    screen.className = "bg-slate-900 rounded-[30px] overflow-hidden relative flex flex-col aspect-4-5 transition-all duration-300";
-                    ratioIndicator.innerText = "4:5 Carousel Deck";
-                    ratioIndicator.className = "px-2.5 py-1 rounded-md text-[10px] font-bold bg-purple-600 text-white uppercase tracking-wider";
-                    mockupPill.innerText = "CAROUSEL 4:5";
-                    mockupPill.className = "text-[9px] font-bold px-2 py-0.5 rounded-full bg-purple-600 text-white";
-                    uploadHint.innerText = "Upload 1 or multiple slides (PNG, JPG)";
+                formatBadge.innerText = `${activePlatform} • ${post.format}`;
+                screen.className = `bg-slate-900 rounded-[30px] overflow-hidden relative flex flex-col ${aspectConfig.ratioClass} transition-all duration-300`;
+                ratioIndicator.innerText = aspectConfig.ratioText;
+                ratioIndicator.className = `px-2.5 py-1 rounded-md text-[10px] font-bold ${aspectConfig.bgPill} text-white uppercase tracking-wider`;
+                mockupPill.innerText = aspectConfig.pillText;
+                mockupPill.className = `text-[9px] font-bold px-2 py-0.5 rounded-full ${aspectConfig.bgPill} text-white uppercase`;
+
+                if (isVideoFormat(post.format)) {
+                    uploadHint.innerText = "Upload MP4 / Video asset for vertical preview";
                 } else {
-                    screen.className = "bg-slate-900 rounded-[30px] overflow-hidden relative flex flex-col aspect-4-5 transition-all duration-300";
-                    ratioIndicator.innerText = "4:5 Portrait Image";
-                    ratioIndicator.className = "px-2.5 py-1 rounded-md text-[10px] font-bold bg-blue-600 text-white uppercase tracking-wider";
-                    mockupPill.innerText = "POST 4:5";
-                    mockupPill.className = "text-[9px] font-bold px-2 py-0.5 rounded-full bg-blue-600 text-white";
-                    uploadHint.innerText = "Upload single graphic asset (PNG, JPG)";
+                    uploadHint.innerText = "Upload 1 or multiple slides (PNG, JPG)";
                 }
 
                 const assets = getPostAssets(post);
                 renderStudioThumbnails(assets);
-                renderMockupMedia(post, assets);
+                renderMockupMedia(post, assets, activePlatform);
             }
         };
 
@@ -1014,7 +1044,7 @@
             if (post) {
                 const assets = getPostAssets(post);
                 renderStudioThumbnails(assets);
-                renderMockupMedia(post, assets);
+                renderMockupMedia(post, assets, currentStudioPlatformOverride || post.platform);
             }
         };
 
@@ -1043,7 +1073,7 @@
             }
         };
 
-        function renderMockupMedia(post, assets) {
+        function renderMockupMedia(post, assets, activePlatform) {
             const mediaArea = document.getElementById('mockup-media-area');
             const dotsArea = document.getElementById('mockup-dots');
             const isVideo = isVideoFormat(post.format);
@@ -1054,7 +1084,7 @@
                     <video src="${videoSrc}" controls autoplay loop muted class="w-full h-full object-cover"></video>
                     <div class="absolute top-3 left-3 px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-md text-[9px] font-bold text-white flex items-center space-x-1">
                         <i data-lucide="play" class="w-3 h-3 text-rose-500 fill-rose-500"></i>
-                        <span>Reel Preview</span>
+                        <span>Video Stream</span>
                     </div>
                 `;
                 dotsArea.innerHTML = '';
@@ -1063,7 +1093,7 @@
             }
 
             if (assets.length === 0) {
-                mediaArea.innerHTML = `<p class="text-xs text-slate-400 text-center px-4">No graphic asset uploaded yet.<br><span class="text-[10px] text-slate-500">Upload single or carousel images.</span></p>`;
+                mediaArea.innerHTML = `<p class="text-xs text-slate-400 text-center px-4">No graphic asset uploaded yet.<br><span class="text-[10px] text-slate-500">Upload image, carousel, or Reel video.</span></p>`;
                 dotsArea.innerHTML = '';
                 return;
             }
@@ -1095,7 +1125,7 @@
             const assets = getPostAssets(post);
             currentSlideIndex = (currentSlideIndex - 1 + assets.length) % assets.length;
             renderStudioThumbnails(assets);
-            renderMockupMedia(post, assets);
+            renderMockupMedia(post, assets, currentStudioPlatformOverride || post.platform);
         };
 
         window.nextMockupSlide = function() {
@@ -1104,7 +1134,7 @@
             const assets = getPostAssets(post);
             currentSlideIndex = (currentSlideIndex + 1) % assets.length;
             renderStudioThumbnails(assets);
-            renderMockupMedia(post, assets);
+            renderMockupMedia(post, assets, currentStudioPlatformOverride || post.platform);
         };
 
         window.handleDesignerUpload = function(event) {
@@ -1133,18 +1163,15 @@
                 return;
             }
 
-            // UPDATE FIRESTORE STATUS TO "Review Needed"
             updateDoc(doc(db, "posts", currentStudioPostId), { 
                 status: "Review Needed" 
             }).then(() => {
-                // SHOW CENTERED CONFIRMATION TOAST
                 document.getElementById('submit-toast-modal').classList.remove('hidden');
             });
         };
 
         window.dismissSubmitToast = function() {
             document.getElementById('submit-toast-modal').classList.add('hidden');
-            // TAKE DESIGNER BACK TO BRIEF CARDS VIEW
             setView('cards');
         };
 

@@ -92,8 +92,8 @@
                     <span class="text-[10px] font-bold uppercase text-slate-400 px-2">Role:</span>
                     <select id="user-role-select" onchange="onRoleChange()" class="text-xs font-bold bg-white text-slate-800 rounded-lg px-2.5 py-1 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
                         <option value="creator">Content Creator</option>
-                        <option value="designer" selected>Graphic Designer</option>
-                        <option value="client">Client / Customer</option>
+                        <option value="designer">Graphic Designer</option>
+                        <option value="client" selected>Client / Customer</option>
                     </select>
                 </div>
                 <button onclick="openSyncModal()" class="inline-flex items-center px-3 py-1.5 border border-slate-300 shadow-sm text-xs font-semibold rounded-lg text-slate-700 bg-white hover:bg-slate-50 transition">
@@ -281,7 +281,7 @@
             <div class="lg:col-span-7 space-y-5">
                 <div>
                     <h3 class="text-base font-bold text-slate-900">Designer Handoff & Mockup Studio</h3>
-                    <p class="text-xs text-slate-500">Select a post to view format specifications and preview dimensions automatically auto-fit by target platform.</p>
+                    <p class="text-xs text-slate-500">Upload video and images directly or attach Google Drive links to update mockups.</p>
                 </div>
 
                 <div class="space-y-4">
@@ -300,6 +300,18 @@
                         <span id="studio-ratio-indicator" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-blue-600 text-white uppercase tracking-wider">4:5 Portrait</span>
                     </div>
 
+                    <!-- GOOGLE DRIVE LINK INPUT BOX -->
+                    <div class="space-y-1.5 bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+                        <label class="block text-xs font-bold text-slate-800">Add Design Asset from Google Drive Link</label>
+                        <div class="flex items-center space-x-2">
+                            <input type="url" id="studio-drive-link-input" placeholder="https://drive.google.com/file/d/.../view" class="flex-1 text-xs p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white">
+                            <button type="button" onclick="addStudioDriveLink()" class="px-3 py-2 text-xs font-bold rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition flex items-center shadow-sm">
+                                <i data-lucide="link" class="w-3.5 h-3.5 mr-1"></i> Add Link
+                            </button>
+                        </div>
+                        <p class="text-[10px] text-slate-500">Ensure the Google Drive file permission is set to <strong>"Anyone with the link can view"</strong>.</p>
+                    </div>
+
                     <!-- PLATFORM OVERRIDE TOGGLE BUTTONS -->
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-2">Adjust Preview Target Platform Dimensions</label>
@@ -314,7 +326,7 @@
                     <div class="border-2 border-dashed border-slate-300 rounded-xl p-6 text-center hover:bg-slate-50 transition cursor-pointer" onclick="document.getElementById('studio-file-input').click()">
                         <input type="file" id="studio-file-input" onchange="handleDesignerUpload(event)" accept="image/*,video/*" multiple class="hidden">
                         <i data-lucide="cloud-upload" id="upload-icon-box" class="w-8 h-8 text-blue-500 mx-auto mb-2"></i>
-                        <p class="text-xs font-bold text-slate-700">Click to upload design asset(s)</p>
+                        <p class="text-xs font-bold text-slate-700">Click to upload local video/image file(s)</p>
                         <p id="upload-hint-text" class="text-[11px] text-slate-400 mt-1">PNG, JPG, or MP4 Video for Reels</p>
                     </div>
 
@@ -364,7 +376,7 @@
                         </div>
 
                         <!-- CAPTION OVERLAY -->
-                        <div class="bg-black/90 p-3 text-white z-10 space-y-1">
+                        <div class="bg-black/90 p-3 text-white z-10 space-y-1 max-h-36 overflow-y-auto custom-scrollbar">
                             <div class="flex items-center justify-between text-white mb-1">
                                 <div class="flex items-center space-x-3">
                                     <i data-lucide="heart" class="w-4 h-4"></i>
@@ -373,7 +385,7 @@
                                 </div>
                                 <div id="mockup-dots" class="flex items-center space-x-1"></div>
                             </div>
-                            <p id="mockup-caption-preview" class="text-[11px] text-slate-200 line-clamp-2 leading-tight">Caption text preview...</p>
+                            <p id="mockup-caption-preview" class="text-[11px] text-slate-200 leading-snug">Caption text preview...</p>
                         </div>
                     </div>
                 </div>
@@ -386,7 +398,7 @@
                 <div class="space-y-1">
                     <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-purple-800 text-purple-200 uppercase tracking-wider">Customer Review Portal</span>
                     <h2 class="text-xl font-bold tracking-tight">Kinshasa Label — Content Approval Studio</h2>
-                    <p class="text-xs text-purple-200 max-w-xl">Review designed posts, inspect copy & platform previews, and approve publications.</p>
+                    <p class="text-xs text-purple-200 max-w-xl">Review designed posts in real target dimensions, inspect full caption copy, and approve or request revisions.</p>
                 </div>
                 <div class="bg-purple-800/80 backdrop-blur-md px-4 py-2.5 rounded-xl border border-purple-700 text-center">
                     <span class="text-[10px] font-bold uppercase text-purple-300 block">Pending Approvals</span>
@@ -482,8 +494,8 @@
                             <input type="text" id="form-cta" placeholder="kinshasalabel.com/commune/Gombe" class="w-full text-xs p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500">
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1">Uploaded Asset URL(s) (Comma Separated)</label>
-                            <input type="text" id="form-asset-url" placeholder="https://..., https://..." class="w-full text-xs p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Uploaded Asset URL(s) or Google Drive Links</label>
+                            <input type="text" id="form-asset-url" placeholder="https://drive.google.com/..., https://..." class="w-full text-xs p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500">
                         </div>
                     </div>
 
@@ -578,10 +590,28 @@
         let currentStudioPostId = "";
         let currentSlideIndex = 0;
         let clientSlideIndices = {};
-        let currentUserRole = "designer"; 
+        let currentUserRole = "client"; // Set default role to client so approval is enabled out-of-the-box
         let currentStudioPlatformOverride = "";
 
         const SAMPLE_REEL_URL = "https://assets.mixkit.co/videos/preview/mixkit-african-city-street-with-traffic-40742-large.mp4";
+
+        // GOOGLE DRIVE URL CONVERTER HELPER
+        function parseGoogleDriveUrl(url) {
+            if (!url || typeof url !== 'string') return url;
+            const trimmed = url.trim();
+            const driveMatch = trimmed.match(/\/file\/d\/([a-zA-Z0-9_-]+)/) || 
+                               trimmed.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+            if (driveMatch && driveMatch[1]) {
+                return `https://lh3.googleusercontent.com/d/${driveMatch[1]}`;
+            }
+            return trimmed;
+        }
+
+        function processAssetUrls(urls) {
+            if (!urls) return [];
+            const list = Array.isArray(urls) ? urls : urls.split(',').map(s => s.trim());
+            return list.map(parseGoogleDriveUrl).filter(Boolean);
+        }
 
         window.onRoleChange = function() {
             currentUserRole = document.getElementById('user-role-select').value;
@@ -591,24 +621,24 @@
         function isRoleAllowedToChangeStatus(targetStatus) {
             const targetNorm = normalizeStatus(targetStatus);
             if (currentUserRole === 'creator') {
-                return targetNorm === 'To Prepare' || targetNorm === 'In Progress';
+                return targetNorm === 'To Prepare' || targetNorm === 'In Progress' || targetNorm === 'Approved & Ready';
             } else if (currentUserRole === 'designer') {
                 return targetNorm === 'In Progress' || targetNorm === 'Review Needed';
             } else if (currentUserRole === 'client') {
                 return targetNorm === 'Approved & Ready' || targetNorm === 'In Progress';
             }
-            return false;
+            return true;
         }
 
         function getPostAssets(post) {
             if (!post) return [];
+            let rawList = [];
             if (Array.isArray(post.assetUrls) && post.assetUrls.length > 0) {
-                return post.assetUrls;
+                rawList = post.assetUrls;
+            } else if (post.assetUrl) {
+                rawList = post.assetUrl.includes(',') ? post.assetUrl.split(',').map(u => u.trim()) : [post.assetUrl];
             }
-            if (post.assetUrl) {
-                return post.assetUrl.includes(',') ? post.assetUrl.split(',').map(u => u.trim()) : [post.assetUrl];
-            }
-            return [];
+            return rawList.map(parseGoogleDriveUrl).filter(Boolean);
         }
 
         function isVideoFormat(formatStr) {
@@ -857,8 +887,6 @@
                 return;
             }
 
-            const canClientApprove = currentUserRole === 'client' || currentUserRole === 'creator';
-
             container.innerHTML = pendingPosts.map(p => {
                 const assets = getPostAssets(p);
                 const idx = clientSlideIndices[p.id] || 0;
@@ -867,9 +895,10 @@
                 const aspectConfig = getPlatformAspectStyle(p.platform, p.format);
 
                 return `
-                <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col justify-between">
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col justify-between">
                     <div>
-                        <div class="bg-slate-900 ${aspectConfig.ratioClass} max-h-[380px] w-full flex items-center justify-center relative group overflow-hidden">
+                        <!-- TARGET REAL DIMENSION PREVIEW FRAME -->
+                        <div class="bg-slate-900 ${aspectConfig.ratioClass} max-h-[420px] w-full flex items-center justify-center relative group overflow-hidden">
                             ${isVideo ? `
                                 <video src="${currentAsset || SAMPLE_REEL_URL}" controls autoplay loop muted class="w-full h-full object-cover"></video>
                             ` : currentAsset ? `
@@ -877,29 +906,38 @@
                             ` : `
                                 <div class="text-center p-4"><i data-lucide="image" class="w-8 h-8 text-slate-600 mx-auto mb-2"></i><p class="text-xs text-slate-400">Design draft pending graphic asset</p></div>
                             `}
-                            <span class="absolute top-3 right-3 px-2 py-1 rounded-md text-[10px] font-bold bg-black/60 backdrop-blur-md text-white">${p.platform}</span>
+                            <span class="absolute top-3 right-3 px-2.5 py-1 rounded-md text-[10px] font-bold bg-black/70 backdrop-blur-md text-white uppercase">${p.platform} • ${aspectConfig.pillText}</span>
                             
                             ${assets.length > 1 && !isVideo ? `
                                 <button onclick="prevClientSlide('${p.id}')" class="absolute left-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-black/60 hover:bg-black/80 text-white flex items-center justify-center transition"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
                                 <button onclick="nextClientSlide('${p.id}')" class="absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-black/60 hover:bg-black/80 text-white flex items-center justify-center transition"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
-                                <span class="absolute bottom-3 left-3 px-2 py-0.5 rounded-full text-[10px] font-bold bg-black/70 text-white">Slide ${idx + 1} / ${assets.length}</span>
+                                <span class="absolute bottom-3 left-3 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-black/70 text-white">Slide ${idx + 1} / ${assets.length}</span>
                             ` : ''}
                         </div>
-                        <div class="p-4 space-y-2">
+
+                        <!-- FULL UNTRUNCATED COPY & METADATA -->
+                        <div class="p-5 space-y-3">
                             <div class="flex items-center justify-between">
                                 <span class="text-[10px] font-bold text-blue-600 uppercase tracking-wider">${p.date} • ${p.pillar}</span>
-                                <span class="text-[10px] font-bold px-2 py-0.5 rounded ${p.clientValidation ? 'bg-emerald-100 text-emerald-800' : 'bg-purple-100 text-purple-800'}">${p.clientValidation ? '✅ Approved' : '⏳ Pending Approval'}</span>
+                                <span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full ${p.clientValidation ? 'bg-emerald-100 text-emerald-800' : 'bg-purple-100 text-purple-800'}">${p.clientValidation ? '✅ Approved' : '⏳ Pending Approval'}</span>
                             </div>
-                            <h3 class="text-sm font-bold text-slate-900">${p.concept}</h3>
-                            <p class="text-xs text-slate-600 line-clamp-3">${p.caption}</p>
+                            <h3 class="text-sm font-bold text-slate-900 leading-snug">${p.concept}</h3>
+                            
+                            <!-- FULL CAPTION COPY DISPLAY -->
+                            <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-100 space-y-1">
+                                <span class="text-[9px] font-bold uppercase text-slate-400 block">Publication Copy / Caption</span>
+                                <p class="text-xs text-slate-700 leading-relaxed whitespace-pre-line">${p.caption || 'No caption text set.'}</p>
+                            </div>
                         </div>
                     </div>
-                    <div class="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between gap-2">
-                        <button onclick="approveClientPost('${p.id}')" ${!canClientApprove ? 'disabled title="Switch role to Client to approve"' : ''} class="flex-1 py-2 text-xs font-bold rounded-lg text-white ${canClientApprove ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-slate-300 cursor-not-allowed'} shadow-sm transition">
-                            Approve & Schedule
+
+                    <!-- CLIENT ACTION BUTTONS -->
+                    <div class="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between gap-3">
+                        <button onclick="approveClientPost('${p.id}')" class="flex-1 py-2.5 text-xs font-bold rounded-xl text-white bg-emerald-600 hover:bg-emerald-700 shadow-md hover:shadow-lg transition flex items-center justify-center">
+                            <i data-lucide="check-circle-2" class="w-4 h-4 mr-1.5"></i> Approve & Schedule
                         </button>
-                        <button onclick="rejectClientPost('${p.id}')" ${!canClientApprove ? 'disabled' : ''} class="px-3 py-2 text-xs font-bold rounded-lg text-slate-700 bg-white border border-slate-300 hover:bg-slate-100 transition">
-                            Revision Needed
+                        <button onclick="rejectClientPost('${p.id}')" class="px-4 py-2.5 text-xs font-bold rounded-xl text-slate-700 bg-white border border-slate-300 hover:bg-slate-100 shadow-sm transition flex items-center">
+                            <i data-lucide="rotate-ccw" class="w-3.5 h-3.5 mr-1 text-slate-500"></i> Revision Needed
                         </button>
                     </div>
                 </div>
@@ -926,24 +964,22 @@
         };
 
         window.approveClientPost = function(id) {
-            if (!isRoleAllowedToChangeStatus('Approved & Ready')) {
-                alert("Only the Client or Content Creator can approve posts.");
-                return;
-            }
             updateDoc(doc(db, "posts", id), {
                 status: "Approved & Ready",
                 clientValidation: true
+            }).then(() => {
+                alert("Post successfully approved and marked as Scheduled!");
             });
         };
 
         window.rejectClientPost = function(id) {
-            if (!isRoleAllowedToChangeStatus('In Progress')) {
-                alert("Only the Client can reject posts back to In Progress.");
-                return;
-            }
+            const note = prompt("Please enter revision details for the designer (optional):");
             updateDoc(doc(db, "posts", id), {
                 status: "In Progress",
-                clientValidation: false
+                clientValidation: false,
+                brief: note ? `[REVISION REQUESTED]: ${note}` : undefined
+            }).then(() => {
+                alert("Post sent back to designer as 'In Progress'.");
             });
         };
 
@@ -958,6 +994,27 @@
             }
             onStudioPostChange();
         }
+
+        window.addStudioDriveLink = function() {
+            const input = document.getElementById('studio-drive-link-input');
+            const rawUrl = input ? input.value.trim() : '';
+            if (!rawUrl) return;
+
+            const post = postsData.find(p => p.id === currentStudioPostId);
+            if (!post) return;
+
+            const existingAssets = getPostAssets(post);
+            const convertedUrl = parseGoogleDriveUrl(rawUrl);
+            const updatedAssets = [...existingAssets, convertedUrl];
+
+            updateDoc(doc(db, "posts", post.id), {
+                assetUrls: updatedAssets,
+                assetUrl: updatedAssets.join(','),
+                status: "Review Needed"
+            }).then(() => {
+                if (input) input.value = '';
+            });
+        };
 
         window.setStudioPlatform = function(platformName) {
             currentStudioPlatformOverride = platformName;
@@ -1158,11 +1215,6 @@
         window.submitStudioDesignForReview = function() {
             if (!currentStudioPostId) return;
 
-            if (!isRoleAllowedToChangeStatus("Review Needed")) {
-                alert(`Role '${currentUserRole.toUpperCase()}' cannot submit designs for review.`);
-                return;
-            }
-
             updateDoc(doc(db, "posts", currentStudioPostId), { 
                 status: "Review Needed" 
             }).then(() => {
@@ -1230,7 +1282,7 @@
             e.preventDefault();
             const id = document.getElementById('form-post-id').value || ("post_" + Date.now());
             const rawAssets = document.getElementById('form-asset-url').value;
-            const assetList = rawAssets ? rawAssets.split(',').map(s => s.trim()).filter(Boolean) : [];
+            const assetList = processAssetUrls(rawAssets);
 
             const post = {
                 id,

@@ -361,7 +361,7 @@
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <label class="block text-xs font-bold text-slate-700 mb-1">Publication Date</label>
-                            <input type="text" id="form-date" required placeholder="e.g. Monday, Nov 9, or 09/11/2026" class="w-full text-xs p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            <input type="text" id="form-date" required placeholder="Monday, Nov 9, or 09/11/2026" class="w-full text-xs p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500">
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-slate-700 mb-1">Platform(s)</label>
@@ -525,23 +525,26 @@
         let currentStudioPostId = "";
         let currentMockupPlatform = 'instagram';
 
+        function safeParseDate(d) {
+            if (!d) return 0;
+            const cleaned = d.replace(/,/g, '').trim();
+            if (cleaned.includes('/')) {
+                const parts = cleaned.split('/');
+                if (parts.length === 3) {
+                    return new Date(`${parts[2]}-${parts[1]}-${parts[0]}`).getTime() || 0;
+                }
+            }
+            const time = new Date(cleaned).getTime();
+            return isNaN(time) ? 0 : time;
+        }
+
         onSnapshot(postsRef, (snapshot) => {
             let remotePosts = [];
             snapshot.forEach((doc) => {
                 remotePosts.push(doc.data());
             });
             
-            postsData = remotePosts.sort((a, b) => {
-                const parseDate = (d) => {
-                    if (!d) return 0;
-                    if (d.includes('/')) {
-                        const parts = d.split('/');
-                        return new Date(`${parts[2]}-${parts[1]}-${parts[0]}`).getTime();
-                    }
-                    return new Date(d).getTime();
-                };
-                return parseDate(a.date) - parseDate(b.date);
-            });
+            postsData = remotePosts.sort((a, b) => safeParseDate(a.date) - safeParseDate(b.date));
             renderAll();
         });
 
@@ -975,7 +978,6 @@
 
                 const parsedRows = parseCSV(rawText);
                 
-                // Locate table header row dynamically (contains 'date')
                 let startIdx = parsedRows.findIndex(row => {
                     const lineStr = row.join(' ').toLowerCase();
                     return lineStr.includes('date') && (lineStr.includes('plateforme') || lineStr.includes('format') || lineStr.includes('jour'));

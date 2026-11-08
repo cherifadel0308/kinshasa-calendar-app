@@ -168,6 +168,9 @@
                 <button onclick="setView('studio')" id="tab-studio" class="flex-1 md:flex-initial px-4 py-1.5 text-xs font-bold rounded-md text-slate-600 hover:text-slate-900 transition">
                     <i data-lucide="smartphone" class="w-3.5 h-3.5 inline mr-1.5"></i> Designer Studio & Mockup
                 </button>
+                <button onclick="setView('client')" id="tab-client" class="flex-1 md:flex-initial px-4 py-1.5 text-xs font-bold rounded-md text-purple-700 bg-purple-50 hover:bg-purple-100 transition">
+                    <i data-lucide="check-check" class="w-3.5 h-3.5 inline mr-1.5"></i> Client Portal
+                </button>
             </div>
 
             <div class="flex items-center space-x-3 w-full md:w-auto justify-end">
@@ -198,7 +201,7 @@
                             <th class="py-3 px-3 w-48">Subject / Concept</th>
                             <th class="py-3 px-3 w-64">Caption & Post Copy</th>
                             <th class="py-3 px-3 w-64">Designer Visual Brief</th>
-                            <th class="py-3 px-3 w-32">Status</th>
+                            <th class="py-3 px-3 w-36">Workflow Status</th>
                             <th class="py-3 px-3 w-24 text-center">Client Check</th>
                             <th class="py-3 px-3 w-24 text-right">Actions</th>
                         </tr>
@@ -252,13 +255,13 @@
         <div id="view-studio" class="hidden bg-white p-6 rounded-xl border border-slate-200 shadow-sm grid grid-cols-1 lg:grid-cols-12 gap-8">
             <div class="lg:col-span-7 space-y-5">
                 <div>
-                    <h3 class="text-base font-bold text-slate-900">Designer Handoff & Platform Preview</h3>
-                    <p class="text-xs text-slate-500">Select a post, upload visual assets, and check how it looks on Instagram, TikTok, or Facebook.</p>
+                    <h3 class="text-base font-bold text-slate-900">Designer Handoff & Mockup Studio</h3>
+                    <p class="text-xs text-slate-500">Select a post, review designer guidelines, upload finished visual assets, and flag for client approval.</p>
                 </div>
 
                 <div class="space-y-4">
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Select Active Post</label>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Select Active Publication</label>
                         <select id="studio-post-select" onchange="onStudioPostChange()" class="w-full text-xs p-2.5 border border-slate-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500">
                         </select>
                     </div>
@@ -267,12 +270,22 @@
                         <input type="file" id="studio-file-input" onchange="handleDesignerUpload(event)" accept="image/*,video/*" class="hidden">
                         <i data-lucide="cloud-upload" class="w-8 h-8 text-blue-500 mx-auto mb-2"></i>
                         <p class="text-xs font-bold text-slate-700">Click to upload visual design asset(s)</p>
-                        <p class="text-[11px] text-slate-400 mt-1">Supports PNG, JPG, MP4 (Square 1:1, Portrait 4:5, Vertical 9:16)</p>
+                        <p class="text-[11px] text-slate-400 mt-1">PNG, JPG, MP4 (1:1, 4:5, 9:16 vertical)</p>
                     </div>
 
                     <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
-                        <span class="text-[10px] font-bold uppercase text-slate-400">Designer Brief Instructions</span>
+                        <span class="text-[10px] font-bold uppercase text-slate-400">Designer Visual Brief</span>
                         <p id="studio-brief-text" class="text-xs text-slate-700 leading-relaxed italic">Select a post to view visual instructions.</p>
+                    </div>
+
+                    <div class="flex items-center justify-between bg-purple-50 p-3.5 rounded-xl border border-purple-200">
+                        <div>
+                            <span class="text-xs font-bold text-purple-900 block">Submit Design for Customer Approval</span>
+                            <span class="text-[11px] text-purple-600">Sets status to "Under Review" and notifies the client portal.</span>
+                        </div>
+                        <button onclick="submitStudioDesignForReview()" class="px-3.5 py-1.5 text-xs font-bold rounded-lg bg-purple-600 text-white hover:bg-purple-700 shadow-sm transition">
+                            Submit Design
+                        </button>
                     </div>
 
                     <div>
@@ -311,6 +324,24 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- VIEW 5: DEDICATED CLIENT VALIDATION PORTAL -->
+        <div id="view-client" class="hidden space-y-6">
+            <div class="bg-purple-900 text-white p-6 rounded-2xl shadow-lg flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="space-y-1">
+                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-purple-800 text-purple-200 uppercase tracking-wider">Customer Review Portal</span>
+                    <h2 class="text-xl font-bold tracking-tight">Kinshasa Label — Content Approval Studio</h2>
+                    <p class="text-xs text-purple-200 max-w-xl">Review designed posts, inspect copy & platform previews, and approve publications for direct scheduling.</p>
+                </div>
+                <div class="bg-purple-800/80 backdrop-blur-md px-4 py-2.5 rounded-xl border border-purple-700 text-center">
+                    <span class="text-[10px] font-bold uppercase text-purple-300 block">Pending Approvals</span>
+                    <span id="client-pending-count" class="text-2xl font-extrabold text-white">0</span>
+                </div>
+            </div>
+
+            <div id="client-review-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             </div>
         </div>
     </main>
@@ -474,7 +505,7 @@
     <!-- FIREBASE MODULE & APPLICATION SCRIPT -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js";
-        import { getFirestore, collection, onSnapshot, doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
+        import { getFirestore, collection, onSnapshot, doc, setDoc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyB3lEWQTbsH6BRICXAJYAv5qn-IzygOpZM",
@@ -515,12 +546,16 @@
         });
 
         window.setView = function(viewName) {
-            ['table', 'kanban', 'cards', 'studio'].forEach(v => {
+            ['table', 'kanban', 'cards', 'studio', 'client'].forEach(v => {
                 document.getElementById(`view-${v}`).classList.add('hidden');
                 document.getElementById(`tab-${v}`).className = "flex-1 md:flex-initial px-4 py-1.5 text-xs font-bold rounded-md text-slate-600 hover:text-slate-900 transition";
             });
             document.getElementById(`view-${viewName}`).classList.remove('hidden');
-            document.getElementById(`tab-${viewName}`).className = "flex-1 md:flex-initial px-4 py-1.5 text-xs font-bold rounded-md bg-white text-slate-900 shadow-sm transition";
+            if (viewName === 'client') {
+                document.getElementById(`tab-client`).className = "flex-1 md:flex-initial px-4 py-1.5 text-xs font-bold rounded-md text-purple-700 bg-purple-100 shadow-sm transition";
+            } else {
+                document.getElementById(`tab-${viewName}`).className = "flex-1 md:flex-initial px-4 py-1.5 text-xs font-bold rounded-md bg-white text-slate-900 shadow-sm transition";
+            }
         };
 
         window.filterByScorecard = function(statusKey) {
@@ -541,6 +576,10 @@
             if (lower.includes('programmé') || lower.includes('approved') || lower.includes('ready')) return 'Approved & Ready';
             return 'To Prepare';
         }
+
+        window.updatePostStatusInline = function(id, newStatus) {
+            updateDoc(doc(db, "posts", id), { status: newStatus });
+        };
 
         window.filterPosts = function() {
             const searchVal = document.getElementById('search-input').value.toLowerCase();
@@ -563,6 +602,7 @@
             renderTable(filtered);
             renderKanban(filtered);
             renderCards(filtered);
+            renderClientPortal();
             updateKPIs();
         };
 
@@ -586,7 +626,14 @@
                     <td class="py-3 px-3 font-medium">${p.concept}</td>
                     <td class="py-3 px-3 text-[11px] text-slate-500 line-clamp-2">${p.caption}</td>
                     <td class="py-3 px-3 text-[11px] text-slate-500 italic line-clamp-2">${p.brief}</td>
-                    <td class="py-3 px-3"><span class="px-2 py-1 rounded-full text-[10px] font-extrabold ${getStatusBadgeClass(p.status)}">${normalizeStatus(p.status)}</span></td>
+                    <td class="py-3 px-3">
+                        <select onchange="updatePostStatusInline('${p.id}', this.value)" class="text-[10px] font-bold p-1 rounded-lg border border-slate-200 bg-white focus:ring-2 focus:ring-blue-500">
+                            <option value="To Prepare" ${normalizeStatus(p.status) === 'To Prepare' ? 'selected' : ''}>À préparer</option>
+                            <option value="In Progress" ${normalizeStatus(p.status) === 'In Progress' ? 'selected' : ''}>In Progress</option>
+                            <option value="Review Needed" ${normalizeStatus(p.status) === 'Review Needed' ? 'selected' : ''}>En validation</option>
+                            <option value="Approved & Ready" ${normalizeStatus(p.status) === 'Approved & Ready' ? 'selected' : ''}>Programmés</option>
+                        </select>
+                    </td>
                     <td class="py-3 px-3 text-center">${p.clientValidation ? '✅' : '⏳'}</td>
                     <td class="py-3 px-3 text-right">
                         <div class="flex items-center justify-end space-x-1">
@@ -615,11 +662,16 @@
                             </div>
                             <h4 class="text-xs font-bold text-slate-900 leading-snug">${p.concept}</h4>
                             <p class="text-[11px] text-slate-500 italic line-clamp-2">${p.brief}</p>
-                            <div class="flex items-center justify-between pt-2 border-t border-slate-100">
-                                <span class="px-1.5 py-0.5 rounded bg-slate-100 text-[9px] font-bold">${p.format}</span>
-                                <div class="flex items-center space-x-2">
+                            <div class="pt-2 border-t border-slate-100 flex items-center justify-between">
+                                <select onchange="updatePostStatusInline('${p.id}', this.value)" class="text-[9px] font-bold p-1 rounded border border-slate-200 bg-white">
+                                    <option value="To Prepare" ${norm === 'To Prepare' ? 'selected' : ''}>To Prepare</option>
+                                    <option value="In Progress" ${norm === 'In Progress' ? 'selected' : ''}>In Progress</option>
+                                    <option value="Review Needed" ${norm === 'Review Needed' ? 'selected' : ''}>Review</option>
+                                    <option value="Approved & Ready" ${norm === 'Approved & Ready' ? 'selected' : ''}>Scheduled</option>
+                                </select>
+                                <div class="flex items-center space-x-1">
                                     <button onclick="openPostModal('${p.id}')" class="text-xs font-bold text-blue-600 hover:underline">Edit</button>
-                                    <button onclick="deletePost('${p.id}')" class="text-xs font-bold text-red-500 hover:underline">Delete</button>
+                                    <button onclick="deletePost('${p.id}')" class="text-xs font-bold text-red-500 hover:underline">Del</button>
                                 </div>
                             </div>
                         </div>
@@ -638,7 +690,12 @@
                 <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3">
                     <div class="flex items-center justify-between">
                         <span class="px-2 py-0.5 rounded bg-blue-50 text-[10px] font-bold text-blue-700">${p.pillar}</span>
-                        <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold ${getStatusBadgeClass(p.status)}">${normalizeStatus(p.status)}</span>
+                        <select onchange="updatePostStatusInline('${p.id}', this.value)" class="text-[10px] font-bold p-1 rounded-full border border-slate-200 bg-white">
+                            <option value="To Prepare" ${normalizeStatus(p.status) === 'To Prepare' ? 'selected' : ''}>To Prepare</option>
+                            <option value="In Progress" ${normalizeStatus(p.status) === 'In Progress' ? 'selected' : ''}>In Progress</option>
+                            <option value="Review Needed" ${normalizeStatus(p.status) === 'Review Needed' ? 'selected' : ''}>Review Needed</option>
+                            <option value="Approved & Ready" ${normalizeStatus(p.status) === 'Approved & Ready' ? 'selected' : ''}>Scheduled</option>
+                        </select>
                     </div>
                     <h3 class="text-sm font-bold text-slate-900">${p.concept}</h3>
                     <p class="text-xs text-slate-600 line-clamp-3">${p.caption}</p>
@@ -656,6 +713,60 @@
                 </div>
             `).join('');
         }
+
+        function renderClientPortal() {
+            const container = document.getElementById('client-review-grid');
+            const pendingPosts = postsData.filter(p => normalizeStatus(p.status) === 'Review Needed' || p.assetUrl);
+            
+            document.getElementById('client-pending-count').innerText = pendingPosts.filter(p => !p.clientValidation).length;
+
+            if (pendingPosts.length === 0) {
+                container.innerHTML = `<div class="col-span-3 text-center py-12 bg-white rounded-xl border border-slate-200"><p class="text-xs text-slate-500">No designs pending client validation at this time.</p></div>`;
+                return;
+            }
+
+            container.innerHTML = pendingPosts.map(p => `
+                <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col justify-between">
+                    <div>
+                        <div class="bg-slate-900 h-64 flex items-center justify-center relative">
+                            ${p.assetUrl ? `<img src="${p.assetUrl}" class="w-full h-full object-cover">` : `<div class="text-center p-4"><i data-lucide="image" class="w-8 h-8 text-slate-600 mx-auto mb-2"></i><p class="text-xs text-slate-400">Design draft pending graphic asset</p></div>`}
+                            <span class="absolute top-3 right-3 px-2 py-1 rounded-md text-[10px] font-bold bg-black/60 backdrop-blur-md text-white">${p.platform}</span>
+                        </div>
+                        <div class="p-4 space-y-2">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[10px] font-bold text-blue-600 uppercase tracking-wider">${p.date} • ${p.pillar}</span>
+                                <span class="text-[10px] font-bold px-2 py-0.5 rounded ${p.clientValidation ? 'bg-emerald-100 text-emerald-800' : 'bg-purple-100 text-purple-800'}">${p.clientValidation ? '✅ Approved' : '⏳ Pending Approval'}</span>
+                            </div>
+                            <h3 class="text-sm font-bold text-slate-900">${p.concept}</h3>
+                            <p class="text-xs text-slate-600 line-clamp-3">${p.caption}</p>
+                        </div>
+                    </div>
+                    <div class="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between gap-2">
+                        <button onclick="approveClientPost('${p.id}')" class="flex-1 py-2 text-xs font-bold rounded-lg text-white bg-emerald-600 hover:bg-emerald-700 shadow-sm transition">
+                            Approve & Schedule
+                        </button>
+                        <button onclick="rejectClientPost('${p.id}')" class="px-3 py-2 text-xs font-bold rounded-lg text-slate-700 bg-white border border-slate-300 hover:bg-slate-100 transition">
+                            Revision Needed
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        window.approveClientPost = function(id) {
+            updateDoc(doc(db, "posts", id), {
+                status: "Approved & Ready",
+                clientValidation: true
+            });
+        };
+
+        window.rejectClientPost = function(id) {
+            updateDoc(doc(db, "posts", id), {
+                status: "In Progress",
+                clientValidation: false
+            });
+        };
 
         function getStatusBadgeClass(s) {
             const norm = normalizeStatus(s);
@@ -684,7 +795,7 @@
                 if (post.assetUrl) {
                     document.getElementById('mockup-media-area').innerHTML = `<img src="${post.assetUrl}" class="w-full h-full object-cover">`;
                 } else {
-                    document.getElementById('mockup-media-area').innerHTML = `<p class="text-xs text-slate-400 text-center px-4">No graphic asset uploaded yet.</p>`;
+                    document.getElementById('mockup-media-area').innerHTML = `<p class="text-xs text-slate-400 text-center px-4">No graphic asset uploaded yet.<br><span class="text-[10px] text-slate-500">Upload an image to preview.</span></p>`;
                 }
             }
         };
@@ -706,6 +817,13 @@
                     post.status = "Review Needed";
                     setDoc(doc(db, "posts", post.id), post);
                 }
+            }
+        };
+
+        window.submitStudioDesignForReview = function() {
+            if (currentStudioPostId) {
+                updateDoc(doc(db, "posts", currentStudioPostId), { status: "Review Needed" });
+                alert("Design flagged as 'Under Review' and sent to the Client Portal.");
             }
         };
 
@@ -806,105 +924,3 @@
                     if (currentRow.some(c => c !== '')) rows.push(currentRow);
                     currentRow = [];
                     currentCell = '';
-                } else {
-                    currentCell += char;
-                }
-            }
-            if (currentCell || currentRow.length > 0) {
-                currentRow.push(currentCell.trim());
-                if (currentRow.some(c => c !== '')) rows.push(currentRow);
-            }
-            return rows;
-        }
-
-        window.importSheetData = async function() {
-            const urlInput = document.getElementById('sheet-url-input').value.trim();
-            const csvText = document.getElementById('sheet-csv-input').value.trim();
-            const importMode = document.querySelector('input[name="import-mode"]:checked').value;
-
-            let rawText = csvText;
-
-            if (urlInput) {
-                const match = urlInput.match(/\/d\/([a-zA-Z0-9-_]+)/);
-                if (match && match[1]) {
-                    const sheetId = match[1];
-                    const gidMatch = urlInput.match(/gid=([0-9]+)/);
-                    const gidParam = gidMatch ? `&gid=${gidMatch[1]}` : '';
-                    const fetchUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv${gidParam}`;
-                    
-                    try {
-                        const res = await fetch(fetchUrl);
-                        if (!res.ok) throw new Error('HTTP status ' + res.status);
-                        rawText = await res.text();
-                    } catch(e) {
-                        alert('Error fetching Google Sheet directly. Make sure sharing is set to "Anyone with the link can view".');
-                        return;
-                    }
-                } else {
-                    alert('Invalid Google Sheet URL format.');
-                    return;
-                }
-            }
-
-            if (rawText) {
-                // If OVERRIDE / REPLACE mode selected, delete all current posts in Firestore first
-                if (importMode === 'replace') {
-                    if (!confirm("Warning: You selected Override Everything. This will delete all existing posts before importing the new sheet data. Continue?")) {
-                        return;
-                    }
-                    const deletePromises = postsData.map(p => deleteDoc(doc(db, "posts", p.id)));
-                    await Promise.all(deletePromises);
-                }
-
-                const parsedRows = parseCSV(rawText);
-                
-                let startIdx = parsedRows.findIndex(row => {
-                    const lineStr = row.join(' ').toLowerCase();
-                    return lineStr.includes('date') && (lineStr.includes('plateforme') || lineStr.includes('format'));
-                });
-
-                if (startIdx === -1) startIdx = 0;
-
-                const dataRows = parsedRows.slice(startIdx + 1);
-
-                dataRows.forEach((cols) => {
-                    const rawDate = cols[0] ? cols[0].trim() : '';
-                    if (rawDate && rawDate.toLowerCase() !== 'date' && cols.length >= 4) {
-                        const dateVal = rawDate;
-                        const conceptVal = cols[5] || cols[4] || 'Concept Item';
-
-                        const docSlug = "doc_" + (dateVal + "_" + conceptVal).toLowerCase().replace(/[^a-z0-9]/g, '_');
-
-                        const updatedPost = {
-                            id: docSlug,
-                            date: dateVal,
-                            day: cols[1] || '',
-                            platform: cols[2] || 'Facebook & Instagram',
-                            format: cols[3] || 'Carrousel',
-                            pillar: cols[4] || 'Kin Business & Prix',
-                            concept: conceptVal,
-                            caption: cols[6] || '',
-                            brief: cols[7] || '',
-                            cta: cols[8] || '',
-                            status: cols[9] || 'To Prepare',
-                            clientValidation: (cols[14] || '').toUpperCase() === 'TRUE'
-                        };
-
-                        setDoc(doc(db, "posts", docSlug), updatedPost);
-                    }
-                });
-                
-                closeSyncModal();
-            }
-        };
-
-        function renderAll() {
-            filterPosts();
-            renderStudioSelect();
-        }
-
-        renderAll();
-        lucide.createIcons();
-    </script>
-</body>
-</html>

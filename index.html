@@ -20,6 +20,22 @@
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col font-sans">
 
+    <!-- SUBMISSION NOTIFICATION MODAL -->
+    <div id="submit-toast-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-md z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl p-6 max-w-sm w-full text-center space-y-4 shadow-2xl border border-slate-100 transform transition-all scale-100">
+            <div class="w-14 h-14 bg-emerald-100 rounded-full flex items-center justify-center mx-auto text-emerald-600">
+                <i data-lucide="check-circle-2" class="w-8 h-8"></i>
+            </div>
+            <div class="space-y-1">
+                <h3 class="text-base font-bold text-slate-900">Design Submitted!</h3>
+                <p class="text-xs text-slate-500">Your visual asset has been uploaded and post status updated to <strong class="text-purple-600">En validation</strong>.</p>
+            </div>
+            <button onclick="dismissSubmitToast()" class="w-full py-2.5 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition shadow-sm">
+                Go to Brief Cards
+            </button>
+        </div>
+    </div>
+
     <!-- TOP HEADER / NAV -->
     <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
@@ -70,7 +86,16 @@
                 </div>
             </div>
 
+            <!-- ROLE SWITCHER & ACTION BUTTONS -->
             <div class="flex items-center space-x-3">
+                <div class="flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200">
+                    <span class="text-[10px] font-bold uppercase text-slate-400 px-2">Role:</span>
+                    <select id="user-role-select" onchange="onRoleChange()" class="text-xs font-bold bg-white text-slate-800 rounded-lg px-2.5 py-1 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="creator">Content Creator</option>
+                        <option value="designer" selected>Graphic Designer</option>
+                        <option value="client">Client / Customer</option>
+                    </select>
+                </div>
                 <button onclick="openSyncModal()" class="inline-flex items-center px-3 py-1.5 border border-slate-300 shadow-sm text-xs font-semibold rounded-lg text-slate-700 bg-white hover:bg-slate-50 transition">
                     <i data-lucide="link" class="w-4 h-4 mr-1.5 text-slate-500"></i> Import Google Sheet
                 </button>
@@ -256,7 +281,7 @@
             <div class="lg:col-span-7 space-y-5">
                 <div>
                     <h3 class="text-base font-bold text-slate-900">Designer Handoff & Mockup Studio</h3>
-                    <p class="text-xs text-slate-500">Select a post, review designer guidelines, upload multi-slide carousel assets or single images, and submit for client review.</p>
+                    <p class="text-xs text-slate-500">Select a post to review guidelines, inspect format aspect ratios, upload single/carousel image or Reel video assets, and submit for client review.</p>
                 </div>
 
                 <div class="space-y-4">
@@ -266,19 +291,28 @@
                         </select>
                     </div>
 
-                    <!-- MULTI-FILE CAROUSEL UPLOAD BOX -->
+                    <!-- FORMAT & DETAILS HIGHLIGHT CARD -->
+                    <div class="bg-blue-50 p-4 rounded-xl border border-blue-200 flex items-center justify-between">
+                        <div>
+                            <span class="text-[10px] font-bold uppercase text-blue-500 block">Selected Format & Aspect Ratio</span>
+                            <span id="studio-format-badge" class="text-xs font-extrabold text-blue-900">Vidéo courte (9:16)</span>
+                        </div>
+                        <span id="studio-ratio-indicator" class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-blue-600 text-white uppercase tracking-wider">9:16 Vertical</span>
+                    </div>
+
+                    <!-- MULTI-FILE / VIDEO UPLOAD BOX -->
                     <div class="border-2 border-dashed border-slate-300 rounded-xl p-6 text-center hover:bg-slate-50 transition cursor-pointer" onclick="document.getElementById('studio-file-input').click()">
                         <input type="file" id="studio-file-input" onchange="handleDesignerUpload(event)" accept="image/*,video/*" multiple class="hidden">
-                        <i data-lucide="images" class="w-8 h-8 text-blue-500 mx-auto mb-2"></i>
+                        <i data-lucide="video-or-image" id="upload-icon-box" class="w-8 h-8 text-blue-500 mx-auto mb-2"></i>
                         <p class="text-xs font-bold text-slate-700">Click to upload design asset(s)</p>
-                        <p id="upload-hint-text" class="text-[11px] text-slate-400 mt-1">Select 1 or multiple slides for Carousels (PNG, JPG, MP4)</p>
+                        <p id="upload-hint-text" class="text-[11px] text-slate-400 mt-1">PNG, JPG, or MP4 Video for Reels</p>
                     </div>
 
                     <!-- UPLOADED ASSETS THUMBNAIL LIST -->
                     <div id="studio-thumbnail-strip" class="hidden space-y-2">
                         <div class="flex items-center justify-between">
-                            <span class="text-[11px] font-bold uppercase text-slate-500">Uploaded Slides (<span id="slide-count-badge">0</span>)</span>
-                            <button onclick="clearStudioAssets()" class="text-[10px] font-bold text-red-600 hover:underline">Clear All Slides</button>
+                            <span class="text-[11px] font-bold uppercase text-slate-500">Uploaded Assets (<span id="slide-count-badge">0</span>)</span>
+                            <button onclick="clearStudioAssets()" class="text-[10px] font-bold text-red-600 hover:underline">Clear Assets</button>
                         </div>
                         <div id="studio-thumbnails-container" class="flex items-center space-x-2 overflow-x-auto pb-2 custom-scrollbar">
                         </div>
@@ -292,40 +326,34 @@
                     <div class="flex items-center justify-between bg-purple-50 p-3.5 rounded-xl border border-purple-200">
                         <div>
                             <span class="text-xs font-bold text-purple-900 block">Submit Design for Customer Approval</span>
-                            <span class="text-[11px] text-purple-600">Sets status to "Under Review" and sends slides to the client portal.</span>
+                            <span class="text-[11px] text-purple-600">Sets status to "En validation" and redirects to Brief Cards.</span>
                         </div>
-                        <button onclick="submitStudioDesignForReview()" class="px-3.5 py-1.5 text-xs font-bold rounded-lg bg-purple-600 text-white hover:bg-purple-700 shadow-sm transition">
-                            Submit Design
+                        <button onclick="submitStudioDesignForReview()" class="px-3.5 py-2 text-xs font-bold rounded-lg bg-purple-600 text-white hover:bg-purple-700 shadow-sm transition flex items-center">
+                            <i data-lucide="send" class="w-3.5 h-3.5 mr-1.5"></i> Submit Design
                         </button>
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-2">Device Mockup Frame</label>
-                        <div class="flex items-center space-x-2">
-                            <button onclick="setStudioPlatform('instagram')" id="platform-btn-instagram" class="px-3 py-1.5 text-xs font-bold rounded-lg border border-blue-500 bg-blue-50 text-blue-700">Instagram</button>
-                            <button onclick="setStudioPlatform('tiktok')" id="platform-btn-tiktok" class="px-3 py-1.5 text-xs font-bold rounded-lg border border-slate-200 bg-white text-slate-600">TikTok (9:16)</button>
-                            <button onclick="setStudioPlatform('facebook')" id="platform-btn-facebook" class="px-3 py-1.5 text-xs font-bold rounded-lg border border-slate-200 bg-white text-slate-600">Facebook</button>
-                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- INTERACTIVE CAROUSEL MOCKUP SCREEN -->
+            <!-- INTERACTIVE CAROUSEL & REEL VIDEO MOCKUP SCREEN -->
             <div class="lg:col-span-5 flex flex-col items-center justify-center border-t lg:border-t-0 lg:border-l border-slate-200 pt-6 lg:pt-0 lg:pl-6">
                 <div id="mockup-frame-container" class="w-[320px] bg-black rounded-[40px] p-3 shadow-2xl border-4 border-slate-800 relative">
-                    <div id="mockup-screen" class="bg-slate-900 rounded-[30px] overflow-hidden relative flex flex-col aspect-4-5">
+                    <div id="mockup-screen" class="bg-slate-900 rounded-[30px] overflow-hidden relative flex flex-col aspect-9-16 transition-all duration-300">
+                        <!-- HEADER OVERLAY -->
                         <div class="bg-black/80 backdrop-blur-md px-3 py-2 flex items-center justify-between text-white z-10">
                             <div class="flex items-center space-x-2">
                                 <div class="w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center text-[10px] font-bold">KL</div>
                                 <span class="text-[11px] font-bold tracking-tight">kinshasalabel</span>
                             </div>
-                            <i data-lucide="more-horizontal" class="w-4 h-4 text-slate-300"></i>
+                            <span id="mockup-format-pill" class="text-[9px] font-bold px-2 py-0.5 rounded-full bg-rose-600 text-white">REEL 9:16</span>
                         </div>
 
+                        <!-- MEDIA DISPLAY AREA -->
                         <div id="mockup-media-area" class="flex-1 bg-slate-800 flex items-center justify-center relative overflow-hidden">
-                            <p class="text-xs text-slate-400 text-center px-4">No graphic asset uploaded yet.<br><span class="text-[10px] text-slate-500">Upload single or carousel images.</span></p>
+                            <p class="text-xs text-slate-400 text-center px-4">No graphic asset uploaded yet.<br><span class="text-[10px] text-slate-500">Upload single image, carousel, or Reel video.</span></p>
                         </div>
 
+                        <!-- CAPTION OVERLAY -->
                         <div class="bg-black/90 p-3 text-white z-10 space-y-1">
                             <div class="flex items-center justify-between text-white mb-1">
                                 <div class="flex items-center space-x-3">
@@ -348,7 +376,7 @@
                 <div class="space-y-1">
                     <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-purple-800 text-purple-200 uppercase tracking-wider">Customer Review Portal</span>
                     <h2 class="text-xl font-bold tracking-tight">Kinshasa Label — Content Approval Studio</h2>
-                    <p class="text-xs text-purple-200 max-w-xl">Review designed posts and interactive carousels, inspect copy & platform previews, and approve publications.</p>
+                    <p class="text-xs text-purple-200 max-w-xl">Review designed posts, inspect copy & platform previews, and approve publications.</p>
                 </div>
                 <div class="bg-purple-800/80 backdrop-blur-md px-4 py-2.5 rounded-xl border border-purple-700 text-center">
                     <span class="text-[10px] font-bold uppercase text-purple-300 block">Pending Approvals</span>
@@ -538,9 +566,29 @@
         let postsData = [];
         let activeScorecardFilter = 'ALL';
         let currentStudioPostId = "";
-        let currentMockupPlatform = 'instagram';
         let currentSlideIndex = 0;
         let clientSlideIndices = {};
+        let currentUserRole = "designer"; // creator | designer | client
+
+        // SAMPLE DEMO REEL VIDEO URL FOR MOCKUP TESTING IF NONE UPLOADED
+        const SAMPLE_REEL_URL = "https://assets.mixkit.co/videos/preview/mixkit-african-city-street-with-traffic-40742-large.mp4";
+
+        window.onRoleChange = function() {
+            currentUserRole = document.getElementById('user-role-select').value;
+            filterPosts();
+        };
+
+        function isRoleAllowedToChangeStatus(targetStatus) {
+            const targetNorm = normalizeStatus(targetStatus);
+            if (currentUserRole === 'creator') {
+                return targetNorm === 'To Prepare' || targetNorm === 'In Progress';
+            } else if (currentUserRole === 'designer') {
+                return targetNorm === 'In Progress' || targetNorm === 'Review Needed';
+            } else if (currentUserRole === 'client') {
+                return targetNorm === 'Approved & Ready' || targetNorm === 'In Progress';
+            }
+            return false;
+        }
 
         function getPostAssets(post) {
             if (!post) return [];
@@ -551,6 +599,12 @@
                 return post.assetUrl.includes(',') ? post.assetUrl.split(',').map(u => u.trim()) : [post.assetUrl];
             }
             return [];
+        }
+
+        function isVideoFormat(formatStr) {
+            if (!formatStr) return false;
+            const lower = formatStr.toLowerCase();
+            return lower.includes('vidéo') || lower.includes('video') || lower.includes('reel') || lower.includes('tiktok');
         }
 
         function safeParseDate(d) {
@@ -609,6 +663,11 @@
         }
 
         window.updatePostStatusInline = function(id, newStatus) {
+            if (!isRoleAllowedToChangeStatus(newStatus)) {
+                alert(`Role '${currentUserRole.toUpperCase()}' is not authorized to transition post status to '${newStatus}'.`);
+                filterPosts();
+                return;
+            }
             updateDoc(doc(db, "posts", id), { status: newStatus });
         };
 
@@ -621,7 +680,7 @@
                 const matchesSearch = (p.concept || '').toLowerCase().includes(searchVal) || (p.caption || '').toLowerCase().includes(searchVal);
                 let matchesStatus = true;
                 if (activeScorecardFilter === 'VIDEO_FORMATS') {
-                    matchesStatus = (p.format || '').toLowerCase().includes('vidéo') || (p.format || '').toLowerCase().includes('video');
+                    matchesStatus = isVideoFormat(p.format);
                 } else if (activeScorecardFilter !== 'ALL') {
                     matchesStatus = normStatus === normalizeStatus(activeScorecardFilter);
                 } else if (selectVal !== 'ALL') {
@@ -643,7 +702,24 @@
             document.getElementById('kpi-in-progress').innerText = postsData.filter(p => normalizeStatus(p.status) === 'In Progress').length;
             document.getElementById('kpi-review-needed').innerText = postsData.filter(p => normalizeStatus(p.status) === 'Review Needed').length;
             document.getElementById('kpi-approved').innerText = postsData.filter(p => normalizeStatus(p.status) === 'Approved & Ready').length;
-            document.getElementById('kpi-video').innerText = postsData.filter(p => (p.format || '').toLowerCase().includes('vidéo')).length;
+            document.getElementById('kpi-video').innerText = postsData.filter(p => isVideoFormat(p.format)).length;
+        }
+
+        function renderStatusSelectOptions(p) {
+            const norm = normalizeStatus(p.status);
+            const canPrepare = isRoleAllowedToChangeStatus('To Prepare');
+            const canProgress = isRoleAllowedToChangeStatus('In Progress');
+            const canReview = isRoleAllowedToChangeStatus('Review Needed');
+            const canApprove = isRoleAllowedToChangeStatus('Approved & Ready');
+
+            return `
+                <select onchange="updatePostStatusInline('${p.id}', this.value)" class="text-[10px] font-bold p-1 rounded-lg border border-slate-200 bg-white focus:ring-2 focus:ring-blue-500">
+                    <option value="To Prepare" ${norm === 'To Prepare' ? 'selected' : ''} ${!canPrepare ? 'disabled' : ''}>À préparer</option>
+                    <option value="In Progress" ${norm === 'In Progress' ? 'selected' : ''} ${!canProgress ? 'disabled' : ''}>In Progress</option>
+                    <option value="Review Needed" ${norm === 'Review Needed' ? 'selected' : ''} ${!canReview ? 'disabled' : ''}>En validation</option>
+                    <option value="Approved & Ready" ${norm === 'Approved & Ready' ? 'selected' : ''} ${!canApprove ? 'disabled' : ''}>Programmés</option>
+                </select>
+            `;
         }
 
         function renderTable(posts) {
@@ -661,12 +737,7 @@
                     <td class="py-3 px-3 text-[11px] text-slate-500 line-clamp-2">${p.caption}</td>
                     <td class="py-3 px-3 text-[11px] text-slate-500 italic line-clamp-2">${p.brief}</td>
                     <td class="py-3 px-3">
-                        <select onchange="updatePostStatusInline('${p.id}', this.value)" class="text-[10px] font-bold p-1 rounded-lg border border-slate-200 bg-white focus:ring-2 focus:ring-blue-500">
-                            <option value="To Prepare" ${normalizeStatus(p.status) === 'To Prepare' ? 'selected' : ''}>À préparer</option>
-                            <option value="In Progress" ${normalizeStatus(p.status) === 'In Progress' ? 'selected' : ''}>In Progress</option>
-                            <option value="Review Needed" ${normalizeStatus(p.status) === 'Review Needed' ? 'selected' : ''}>En validation</option>
-                            <option value="Approved & Ready" ${normalizeStatus(p.status) === 'Approved & Ready' ? 'selected' : ''}>Programmés</option>
-                        </select>
+                        ${renderStatusSelectOptions(p)}
                     </td>
                     <td class="py-3 px-3 text-center">${p.clientValidation ? '✅' : '⏳'}</td>
                     <td class="py-3 px-3 text-right">
@@ -703,12 +774,7 @@
                             <h4 class="text-xs font-bold text-slate-900 leading-snug">${p.concept}</h4>
                             <p class="text-[11px] text-slate-500 italic line-clamp-2">${p.brief}</p>
                             <div class="pt-2 border-t border-slate-100 flex items-center justify-between">
-                                <select onchange="updatePostStatusInline('${p.id}', this.value)" class="text-[9px] font-bold p-1 rounded border border-slate-200 bg-white">
-                                    <option value="To Prepare" ${norm === 'To Prepare' ? 'selected' : ''}>To Prepare</option>
-                                    <option value="In Progress" ${norm === 'In Progress' ? 'selected' : ''}>In Progress</option>
-                                    <option value="Review Needed" ${norm === 'Review Needed' ? 'selected' : ''}>Review</option>
-                                    <option value="Approved & Ready" ${norm === 'Approved & Ready' ? 'selected' : ''}>Scheduled</option>
-                                </select>
+                                ${renderStatusSelectOptions(p)}
                                 <div class="flex items-center space-x-1">
                                     <button onclick="openPostModal('${p.id}')" class="text-xs font-bold text-blue-600 hover:underline">Edit</button>
                                     <button onclick="deletePost('${p.id}')" class="text-xs font-bold text-red-500 hover:underline">Del</button>
@@ -735,12 +801,7 @@
                             <span class="px-2 py-0.5 rounded bg-blue-50 text-[10px] font-bold text-blue-700">${p.pillar}</span>
                             ${assets.length > 1 ? `<span class="px-2 py-0.5 rounded bg-purple-50 text-[10px] font-bold text-purple-700">${assets.length} Slides</span>` : ''}
                         </div>
-                        <select onchange="updatePostStatusInline('${p.id}', this.value)" class="text-[10px] font-bold p-1 rounded-full border border-slate-200 bg-white">
-                            <option value="To Prepare" ${normalizeStatus(p.status) === 'To Prepare' ? 'selected' : ''}>To Prepare</option>
-                            <option value="In Progress" ${normalizeStatus(p.status) === 'In Progress' ? 'selected' : ''}>In Progress</option>
-                            <option value="Review Needed" ${normalizeStatus(p.status) === 'Review Needed' ? 'selected' : ''}>Review Needed</option>
-                            <option value="Approved & Ready" ${normalizeStatus(p.status) === 'Approved & Ready' ? 'selected' : ''}>Scheduled</option>
-                        </select>
+                        ${renderStatusSelectOptions(p)}
                     </div>
                     <h3 class="text-sm font-bold text-slate-900">${p.concept}</h3>
                     <p class="text-xs text-slate-600 line-clamp-3">${p.caption}</p>
@@ -770,19 +831,28 @@
                 return;
             }
 
+            const canClientApprove = currentUserRole === 'client' || currentUserRole === 'creator';
+
             container.innerHTML = pendingPosts.map(p => {
                 const assets = getPostAssets(p);
                 const idx = clientSlideIndices[p.id] || 0;
                 const currentAsset = assets[idx] || assets[0] || null;
+                const isVideo = isVideoFormat(p.format);
 
                 return `
                 <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col justify-between">
                     <div>
                         <div class="bg-slate-900 h-64 flex items-center justify-center relative group">
-                            ${currentAsset ? `<img src="${currentAsset}" class="w-full h-full object-cover">` : `<div class="text-center p-4"><i data-lucide="image" class="w-8 h-8 text-slate-600 mx-auto mb-2"></i><p class="text-xs text-slate-400">Design draft pending graphic asset</p></div>`}
+                            ${isVideo ? `
+                                <video src="${currentAsset || SAMPLE_REEL_URL}" controls autoplay loop muted class="w-full h-full object-cover"></video>
+                            ` : currentAsset ? `
+                                <img src="${currentAsset}" class="w-full h-full object-cover">
+                            ` : `
+                                <div class="text-center p-4"><i data-lucide="image" class="w-8 h-8 text-slate-600 mx-auto mb-2"></i><p class="text-xs text-slate-400">Design draft pending graphic asset</p></div>
+                            `}
                             <span class="absolute top-3 right-3 px-2 py-1 rounded-md text-[10px] font-bold bg-black/60 backdrop-blur-md text-white">${p.platform}</span>
                             
-                            ${assets.length > 1 ? `
+                            ${assets.length > 1 && !isVideo ? `
                                 <button onclick="prevClientSlide('${p.id}')" class="absolute left-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-black/60 hover:bg-black/80 text-white flex items-center justify-center transition"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
                                 <button onclick="nextClientSlide('${p.id}')" class="absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-black/60 hover:bg-black/80 text-white flex items-center justify-center transition"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
                                 <span class="absolute bottom-3 left-3 px-2 py-0.5 rounded-full text-[10px] font-bold bg-black/70 text-white">Slide ${idx + 1} / ${assets.length}</span>
@@ -798,10 +868,10 @@
                         </div>
                     </div>
                     <div class="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between gap-2">
-                        <button onclick="approveClientPost('${p.id}')" class="flex-1 py-2 text-xs font-bold rounded-lg text-white bg-emerald-600 hover:bg-emerald-700 shadow-sm transition">
+                        <button onclick="approveClientPost('${p.id}')" ${!canClientApprove ? 'disabled title="Switch role to Client to approve"' : ''} class="flex-1 py-2 text-xs font-bold rounded-lg text-white ${canClientApprove ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-slate-300 cursor-not-allowed'} shadow-sm transition">
                             Approve & Schedule
                         </button>
-                        <button onclick="rejectClientPost('${p.id}')" class="px-3 py-2 text-xs font-bold rounded-lg text-slate-700 bg-white border border-slate-300 hover:bg-slate-100 transition">
+                        <button onclick="rejectClientPost('${p.id}')" ${!canClientApprove ? 'disabled' : ''} class="px-3 py-2 text-xs font-bold rounded-lg text-slate-700 bg-white border border-slate-300 hover:bg-slate-100 transition">
                             Revision Needed
                         </button>
                     </div>
@@ -829,6 +899,10 @@
         };
 
         window.approveClientPost = function(id) {
+            if (!isRoleAllowedToChangeStatus('Approved & Ready')) {
+                alert("Only the Client or Content Creator can approve posts.");
+                return;
+            }
             updateDoc(doc(db, "posts", id), {
                 status: "Approved & Ready",
                 clientValidation: true
@@ -836,6 +910,10 @@
         };
 
         window.rejectClientPost = function(id) {
+            if (!isRoleAllowedToChangeStatus('In Progress')) {
+                alert("Only the Client can reject posts back to In Progress.");
+                return;
+            }
             updateDoc(doc(db, "posts", id), {
                 status: "In Progress",
                 clientValidation: false
@@ -864,6 +942,38 @@
                 document.getElementById('studio-brief-text').innerText = post.brief || 'No visual brief specified.';
                 document.getElementById('mockup-caption-preview').innerText = post.caption || '';
                 
+                // ADJUST ASPECT RATIO & BADGES ACCORDING TO FORMAT
+                const isVideo = isVideoFormat(post.format);
+                const screen = document.getElementById('mockup-screen');
+                const formatBadge = document.getElementById('studio-format-badge');
+                const ratioIndicator = document.getElementById('studio-ratio-indicator');
+                const mockupPill = document.getElementById('mockup-format-pill');
+                const uploadHint = document.getElementById('upload-hint-text');
+
+                formatBadge.innerText = post.format;
+                if (isVideo) {
+                    screen.className = "bg-slate-900 rounded-[30px] overflow-hidden relative flex flex-col aspect-9-16 transition-all duration-300";
+                    ratioIndicator.innerText = "9:16 Vertical Video";
+                    ratioIndicator.className = "px-2.5 py-1 rounded-md text-[10px] font-bold bg-rose-600 text-white uppercase tracking-wider";
+                    mockupPill.innerText = "REEL 9:16";
+                    mockupPill.className = "text-[9px] font-bold px-2 py-0.5 rounded-full bg-rose-600 text-white";
+                    uploadHint.innerText = "Upload MP4 / Video asset for 9:16 Reel";
+                } else if ((post.format || '').toLowerCase().includes('carrousel')) {
+                    screen.className = "bg-slate-900 rounded-[30px] overflow-hidden relative flex flex-col aspect-4-5 transition-all duration-300";
+                    ratioIndicator.innerText = "4:5 Carousel Deck";
+                    ratioIndicator.className = "px-2.5 py-1 rounded-md text-[10px] font-bold bg-purple-600 text-white uppercase tracking-wider";
+                    mockupPill.innerText = "CAROUSEL 4:5";
+                    mockupPill.className = "text-[9px] font-bold px-2 py-0.5 rounded-full bg-purple-600 text-white";
+                    uploadHint.innerText = "Upload 1 or multiple slides (PNG, JPG)";
+                } else {
+                    screen.className = "bg-slate-900 rounded-[30px] overflow-hidden relative flex flex-col aspect-4-5 transition-all duration-300";
+                    ratioIndicator.innerText = "4:5 Portrait Image";
+                    ratioIndicator.className = "px-2.5 py-1 rounded-md text-[10px] font-bold bg-blue-600 text-white uppercase tracking-wider";
+                    mockupPill.innerText = "POST 4:5";
+                    mockupPill.className = "text-[9px] font-bold px-2 py-0.5 rounded-full bg-blue-600 text-white";
+                    uploadHint.innerText = "Upload single graphic asset (PNG, JPG)";
+                }
+
                 const assets = getPostAssets(post);
                 renderStudioThumbnails(assets);
                 renderMockupMedia(post, assets);
@@ -886,7 +996,11 @@
 
             container.innerHTML = assets.map((url, i) => `
                 <div class="relative flex-shrink-0 w-16 h-16 rounded-lg border-2 ${i === currentSlideIndex ? 'border-blue-600 ring-2 ring-blue-100' : 'border-slate-200'} overflow-hidden bg-slate-900 group cursor-pointer" onclick="selectStudioSlide(${i})">
-                    <img src="${url}" class="w-full h-full object-cover">
+                    ${url.endsWith('.mp4') || isVideoFormat(postsData.find(p=>p.id===currentStudioPostId)?.format) ? `
+                        <video src="${url}" class="w-full h-full object-cover"></video>
+                    ` : `
+                        <img src="${url}" class="w-full h-full object-cover">
+                    `}
                     <span class="absolute bottom-1 left-1 text-[9px] font-bold bg-black/70 text-white px-1 rounded">${i + 1}</span>
                     <button onclick="removeStudioSlide(event, ${i})" class="absolute top-0.5 right-0.5 w-4 h-4 rounded-full bg-red-600 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition"><i data-lucide="x" class="w-3 h-3"></i></button>
                 </div>
@@ -932,6 +1046,21 @@
         function renderMockupMedia(post, assets) {
             const mediaArea = document.getElementById('mockup-media-area');
             const dotsArea = document.getElementById('mockup-dots');
+            const isVideo = isVideoFormat(post.format);
+
+            if (isVideo) {
+                const videoSrc = assets.length > 0 ? assets[0] : SAMPLE_REEL_URL;
+                mediaArea.innerHTML = `
+                    <video src="${videoSrc}" controls autoplay loop muted class="w-full h-full object-cover"></video>
+                    <div class="absolute top-3 left-3 px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-md text-[9px] font-bold text-white flex items-center space-x-1">
+                        <i data-lucide="play" class="w-3 h-3 text-rose-500 fill-rose-500"></i>
+                        <span>Reel Preview</span>
+                    </div>
+                `;
+                dotsArea.innerHTML = '';
+                lucide.createIcons();
+                return;
+            }
 
             if (assets.length === 0) {
                 mediaArea.innerHTML = `<p class="text-xs text-slate-400 text-center px-4">No graphic asset uploaded yet.<br><span class="text-[10px] text-slate-500">Upload single or carousel images.</span></p>`;
@@ -978,12 +1107,6 @@
             renderMockupMedia(post, assets);
         };
 
-        window.setStudioPlatform = function(platform) {
-            currentMockupPlatform = platform;
-            const screen = document.getElementById('mockup-screen');
-            screen.className = platform === 'tiktok' ? 'bg-slate-900 rounded-[30px] overflow-hidden relative flex flex-col aspect-9-16' : 'bg-slate-900 rounded-[30px] overflow-hidden relative flex flex-col aspect-4-5';
-        };
-
         window.handleDesignerUpload = function(event) {
             const files = Array.from(event.target.files);
             if (files.length === 0) return;
@@ -1003,10 +1126,26 @@
         };
 
         window.submitStudioDesignForReview = function() {
-            if (currentStudioPostId) {
-                updateDoc(doc(db, "posts", currentStudioPostId), { status: "Review Needed" });
-                alert("Design & slides flagged as 'Under Review' and submitted to Client Portal.");
+            if (!currentStudioPostId) return;
+
+            if (!isRoleAllowedToChangeStatus("Review Needed")) {
+                alert(`Role '${currentUserRole.toUpperCase()}' cannot submit designs for review.`);
+                return;
             }
+
+            // UPDATE FIRESTORE STATUS TO "Review Needed"
+            updateDoc(doc(db, "posts", currentStudioPostId), { 
+                status: "Review Needed" 
+            }).then(() => {
+                // SHOW CENTERED CONFIRMATION TOAST
+                document.getElementById('submit-toast-modal').classList.remove('hidden');
+            });
+        };
+
+        window.dismissSubmitToast = function() {
+            document.getElementById('submit-toast-modal').classList.add('hidden');
+            // TAKE DESIGNER BACK TO BRIEF CARDS VIEW
+            setView('cards');
         };
 
         window.deletePost = function(id) {

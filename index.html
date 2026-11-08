@@ -256,7 +256,7 @@
             <div class="lg:col-span-7 space-y-5">
                 <div>
                     <h3 class="text-base font-bold text-slate-900">Designer Handoff & Mockup Studio</h3>
-                    <p class="text-xs text-slate-500">Select a post, review designer guidelines, upload finished visual assets, and flag for client approval.</p>
+                    <p class="text-xs text-slate-500">Select a post, review designer guidelines, upload multi-slide carousel assets or single images, and submit for client review.</p>
                 </div>
 
                 <div class="space-y-4">
@@ -266,11 +266,22 @@
                         </select>
                     </div>
 
+                    <!-- MULTI-FILE CAROUSEL UPLOAD BOX -->
                     <div class="border-2 border-dashed border-slate-300 rounded-xl p-6 text-center hover:bg-slate-50 transition cursor-pointer" onclick="document.getElementById('studio-file-input').click()">
-                        <input type="file" id="studio-file-input" onchange="handleDesignerUpload(event)" accept="image/*,video/*" class="hidden">
-                        <i data-lucide="cloud-upload" class="w-8 h-8 text-blue-500 mx-auto mb-2"></i>
-                        <p class="text-xs font-bold text-slate-700">Click to upload visual design asset(s)</p>
-                        <p class="text-[11px] text-slate-400 mt-1">PNG, JPG, MP4 (1:1, 4:5, 9:16 vertical)</p>
+                        <input type="file" id="studio-file-input" onchange="handleDesignerUpload(event)" accept="image/*,video/*" multiple class="hidden">
+                        <i data-lucide="images" class="w-8 h-8 text-blue-500 mx-auto mb-2"></i>
+                        <p class="text-xs font-bold text-slate-700">Click to upload design asset(s)</p>
+                        <p id="upload-hint-text" class="text-[11px] text-slate-400 mt-1">Select 1 or multiple slides for Carousels (PNG, JPG, MP4)</p>
+                    </div>
+
+                    <!-- UPLOADED ASSETS THUMBNAIL LIST -->
+                    <div id="studio-thumbnail-strip" class="hidden space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[11px] font-bold uppercase text-slate-500">Uploaded Slides (<span id="slide-count-badge">0</span>)</span>
+                            <button onclick="clearStudioAssets()" class="text-[10px] font-bold text-red-600 hover:underline">Clear All Slides</button>
+                        </div>
+                        <div id="studio-thumbnails-container" class="flex items-center space-x-2 overflow-x-auto pb-2 custom-scrollbar">
+                        </div>
                     </div>
 
                     <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
@@ -281,7 +292,7 @@
                     <div class="flex items-center justify-between bg-purple-50 p-3.5 rounded-xl border border-purple-200">
                         <div>
                             <span class="text-xs font-bold text-purple-900 block">Submit Design for Customer Approval</span>
-                            <span class="text-[11px] text-purple-600">Sets status to "Under Review" and notifies the client portal.</span>
+                            <span class="text-[11px] text-purple-600">Sets status to "Under Review" and sends slides to the client portal.</span>
                         </div>
                         <button onclick="submitStudioDesignForReview()" class="px-3.5 py-1.5 text-xs font-bold rounded-lg bg-purple-600 text-white hover:bg-purple-700 shadow-sm transition">
                             Submit Design
@@ -299,6 +310,7 @@
                 </div>
             </div>
 
+            <!-- INTERACTIVE CAROUSEL MOCKUP SCREEN -->
             <div class="lg:col-span-5 flex flex-col items-center justify-center border-t lg:border-t-0 lg:border-l border-slate-200 pt-6 lg:pt-0 lg:pl-6">
                 <div id="mockup-frame-container" class="w-[320px] bg-black rounded-[40px] p-3 shadow-2xl border-4 border-slate-800 relative">
                     <div id="mockup-screen" class="bg-slate-900 rounded-[30px] overflow-hidden relative flex flex-col aspect-4-5">
@@ -311,14 +323,17 @@
                         </div>
 
                         <div id="mockup-media-area" class="flex-1 bg-slate-800 flex items-center justify-center relative overflow-hidden">
-                            <p class="text-xs text-slate-400 text-center px-4">No graphic asset uploaded yet.<br><span class="text-[10px] text-slate-500">Upload an image to preview.</span></p>
+                            <p class="text-xs text-slate-400 text-center px-4">No graphic asset uploaded yet.<br><span class="text-[10px] text-slate-500">Upload single or carousel images.</span></p>
                         </div>
 
                         <div class="bg-black/90 p-3 text-white z-10 space-y-1">
-                            <div class="flex items-center space-x-3 text-white mb-1">
-                                <i data-lucide="heart" class="w-4 h-4"></i>
-                                <i data-lucide="message-circle" class="w-4 h-4"></i>
-                                <i data-lucide="send" class="w-4 h-4"></i>
+                            <div class="flex items-center justify-between text-white mb-1">
+                                <div class="flex items-center space-x-3">
+                                    <i data-lucide="heart" class="w-4 h-4"></i>
+                                    <i data-lucide="message-circle" class="w-4 h-4"></i>
+                                    <i data-lucide="send" class="w-4 h-4"></i>
+                                </div>
+                                <div id="mockup-dots" class="flex items-center space-x-1"></div>
                             </div>
                             <p id="mockup-caption-preview" class="text-[11px] text-slate-200 line-clamp-2 leading-tight">Caption text preview...</p>
                         </div>
@@ -333,7 +348,7 @@
                 <div class="space-y-1">
                     <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-purple-800 text-purple-200 uppercase tracking-wider">Customer Review Portal</span>
                     <h2 class="text-xl font-bold tracking-tight">Kinshasa Label — Content Approval Studio</h2>
-                    <p class="text-xs text-purple-200 max-w-xl">Review designed posts, inspect copy & platform previews, and approve publications for direct scheduling.</p>
+                    <p class="text-xs text-purple-200 max-w-xl">Review designed posts and interactive carousels, inspect copy & platform previews, and approve publications.</p>
                 </div>
                 <div class="bg-purple-800/80 backdrop-blur-md px-4 py-2.5 rounded-xl border border-purple-700 text-center">
                     <span class="text-[10px] font-bold uppercase text-purple-300 block">Pending Approvals</span>
@@ -429,8 +444,8 @@
                             <input type="text" id="form-cta" placeholder="kinshasalabel.com/commune/Gombe" class="w-full text-xs p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500">
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1">Uploaded Asset URL</label>
-                            <input type="text" id="form-asset-url" placeholder="https://..." class="w-full text-xs p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Uploaded Asset URL(s) (Comma Separated)</label>
+                            <input type="text" id="form-asset-url" placeholder="https://..., https://..." class="w-full text-xs p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500">
                         </div>
                     </div>
 
@@ -524,6 +539,19 @@
         let activeScorecardFilter = 'ALL';
         let currentStudioPostId = "";
         let currentMockupPlatform = 'instagram';
+        let currentSlideIndex = 0;
+        let clientSlideIndices = {};
+
+        function getPostAssets(post) {
+            if (!post) return [];
+            if (Array.isArray(post.assetUrls) && post.assetUrls.length > 0) {
+                return post.assetUrls;
+            }
+            if (post.assetUrl) {
+                return post.assetUrl.includes(',') ? post.assetUrl.split(',').map(u => u.trim()) : [post.assetUrl];
+            }
+            return [];
+        }
 
         function safeParseDate(d) {
             if (!d) return 0;
@@ -620,11 +648,14 @@
 
         function renderTable(posts) {
             const tbody = document.getElementById('table-body');
-            tbody.innerHTML = posts.map(p => `
+            tbody.innerHTML = posts.map(p => {
+                const assets = getPostAssets(p);
+                const assetBadge = assets.length > 1 ? `<span class="ml-1 text-[9px] px-1.5 py-0.5 rounded-full bg-blue-100 text-blue-800 font-bold">${assets.length} slides</span>` : '';
+                return `
                 <tr class="hover:bg-slate-50 transition">
                     <td class="py-3 px-3 font-semibold text-slate-900">${p.date}</td>
                     <td class="py-3 px-3">${p.platform}</td>
-                    <td class="py-3 px-3"><span class="px-2 py-0.5 rounded bg-slate-100 text-[10px] font-bold text-slate-600">${p.format}</span></td>
+                    <td class="py-3 px-3"><span class="px-2 py-0.5 rounded bg-slate-100 text-[10px] font-bold text-slate-600">${p.format}</span>${assetBadge}</td>
                     <td class="py-3 px-3"><span class="px-2 py-0.5 rounded bg-blue-50 text-[10px] font-bold text-blue-700">${p.pillar}</span></td>
                     <td class="py-3 px-3 font-medium">${p.concept}</td>
                     <td class="py-3 px-3 text-[11px] text-slate-500 line-clamp-2">${p.caption}</td>
@@ -645,7 +676,7 @@
                         </div>
                     </td>
                 </tr>
-            `).join('');
+            `}).join('');
             lucide.createIcons();
         }
 
@@ -656,12 +687,18 @@
             posts.forEach(p => {
                 const norm = normalizeStatus(p.status);
                 const container = document.getElementById(cols[norm] || cols['To Prepare']);
+                const assets = getPostAssets(p);
+                const carouselBadge = assets.length > 1 ? `<span class="px-1.5 py-0.5 rounded bg-purple-100 text-purple-800 text-[9px] font-bold">Carousel (${assets.length})</span>` : '';
+
                 if (container) {
                     container.innerHTML += `
                         <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-sm space-y-2 hover:shadow-md transition">
                             <div class="flex items-center justify-between text-[10px] text-slate-400 font-bold">
                                 <span>${p.date}</span>
-                                <span>${p.platform}</span>
+                                <div class="flex items-center space-x-1">
+                                    ${carouselBadge}
+                                    <span>${p.platform}</span>
+                                </div>
                             </div>
                             <h4 class="text-xs font-bold text-slate-900 leading-snug">${p.concept}</h4>
                             <p class="text-[11px] text-slate-500 italic line-clamp-2">${p.brief}</p>
@@ -689,10 +726,15 @@
 
         function renderCards(posts) {
             const container = document.getElementById('view-cards');
-            container.innerHTML = posts.map(p => `
+            container.innerHTML = posts.map(p => {
+                const assets = getPostAssets(p);
+                return `
                 <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3">
                     <div class="flex items-center justify-between">
-                        <span class="px-2 py-0.5 rounded bg-blue-50 text-[10px] font-bold text-blue-700">${p.pillar}</span>
+                        <div class="flex items-center space-x-1">
+                            <span class="px-2 py-0.5 rounded bg-blue-50 text-[10px] font-bold text-blue-700">${p.pillar}</span>
+                            ${assets.length > 1 ? `<span class="px-2 py-0.5 rounded bg-purple-50 text-[10px] font-bold text-purple-700">${assets.length} Slides</span>` : ''}
+                        </div>
                         <select onchange="updatePostStatusInline('${p.id}', this.value)" class="text-[10px] font-bold p-1 rounded-full border border-slate-200 bg-white">
                             <option value="To Prepare" ${normalizeStatus(p.status) === 'To Prepare' ? 'selected' : ''}>To Prepare</option>
                             <option value="In Progress" ${normalizeStatus(p.status) === 'In Progress' ? 'selected' : ''}>In Progress</option>
@@ -714,12 +756,12 @@
                         </div>
                     </div>
                 </div>
-            `).join('');
+            `}).join('');
         }
 
         function renderClientPortal() {
             const container = document.getElementById('client-review-grid');
-            const pendingPosts = postsData.filter(p => normalizeStatus(p.status) === 'Review Needed' || p.assetUrl);
+            const pendingPosts = postsData.filter(p => normalizeStatus(p.status) === 'Review Needed' || getPostAssets(p).length > 0);
             
             document.getElementById('client-pending-count').innerText = pendingPosts.filter(p => !p.clientValidation).length;
 
@@ -728,12 +770,23 @@
                 return;
             }
 
-            container.innerHTML = pendingPosts.map(p => `
+            container.innerHTML = pendingPosts.map(p => {
+                const assets = getPostAssets(p);
+                const idx = clientSlideIndices[p.id] || 0;
+                const currentAsset = assets[idx] || assets[0] || null;
+
+                return `
                 <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col justify-between">
                     <div>
-                        <div class="bg-slate-900 h-64 flex items-center justify-center relative">
-                            ${p.assetUrl ? `<img src="${p.assetUrl}" class="w-full h-full object-cover">` : `<div class="text-center p-4"><i data-lucide="image" class="w-8 h-8 text-slate-600 mx-auto mb-2"></i><p class="text-xs text-slate-400">Design draft pending graphic asset</p></div>`}
+                        <div class="bg-slate-900 h-64 flex items-center justify-center relative group">
+                            ${currentAsset ? `<img src="${currentAsset}" class="w-full h-full object-cover">` : `<div class="text-center p-4"><i data-lucide="image" class="w-8 h-8 text-slate-600 mx-auto mb-2"></i><p class="text-xs text-slate-400">Design draft pending graphic asset</p></div>`}
                             <span class="absolute top-3 right-3 px-2 py-1 rounded-md text-[10px] font-bold bg-black/60 backdrop-blur-md text-white">${p.platform}</span>
+                            
+                            ${assets.length > 1 ? `
+                                <button onclick="prevClientSlide('${p.id}')" class="absolute left-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-black/60 hover:bg-black/80 text-white flex items-center justify-center transition"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
+                                <button onclick="nextClientSlide('${p.id}')" class="absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-black/60 hover:bg-black/80 text-white flex items-center justify-center transition"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
+                                <span class="absolute bottom-3 left-3 px-2 py-0.5 rounded-full text-[10px] font-bold bg-black/70 text-white">Slide ${idx + 1} / ${assets.length}</span>
+                            ` : ''}
                         </div>
                         <div class="p-4 space-y-2">
                             <div class="flex items-center justify-between">
@@ -753,9 +806,27 @@
                         </button>
                     </div>
                 </div>
-            `).join('');
+            `}).join('');
             lucide.createIcons();
         }
+
+        window.prevClientSlide = function(postId) {
+            const post = postsData.find(p => p.id === postId);
+            if (!post) return;
+            const assets = getPostAssets(post);
+            const curr = clientSlideIndices[postId] || 0;
+            clientSlideIndices[postId] = (curr - 1 + assets.length) % assets.length;
+            renderClientPortal();
+        };
+
+        window.nextClientSlide = function(postId) {
+            const post = postsData.find(p => p.id === postId);
+            if (!post) return;
+            const assets = getPostAssets(post);
+            const curr = clientSlideIndices[postId] || 0;
+            clientSlideIndices[postId] = (curr + 1) % assets.length;
+            renderClientPortal();
+        };
 
         window.approveClientPost = function(id) {
             updateDoc(doc(db, "posts", id), {
@@ -771,36 +842,140 @@
             });
         };
 
-        function getStatusBadgeClass(s) {
-            const norm = normalizeStatus(s);
-            if (norm === 'To Prepare') return 'bg-amber-100 text-amber-800';
-            if (norm === 'In Progress') return 'bg-blue-100 text-blue-800';
-            if (norm === 'Review Needed') return 'bg-purple-100 text-purple-800';
-            return 'bg-emerald-100 text-emerald-800';
-        }
-
         function renderStudioSelect() {
             const select = document.getElementById('studio-post-select');
-            select.innerHTML = postsData.map(p => `<option value="${p.id}">${p.date} - ${p.concept}</option>`).join('');
-            if (postsData.length > 0) {
+            select.innerHTML = postsData.map(p => `<option value="${p.id}">${p.date} - ${p.concept} (${p.format})</option>`).join('');
+            if (postsData.length > 0 && !currentStudioPostId) {
                 currentStudioPostId = postsData[0].id;
-                onStudioPostChange();
             }
+            if (currentStudioPostId) {
+                select.value = currentStudioPostId;
+            }
+            onStudioPostChange();
         }
 
         window.onStudioPostChange = function() {
             const val = document.getElementById('studio-post-select').value;
             currentStudioPostId = val;
+            currentSlideIndex = 0;
+
             const post = postsData.find(p => p.id === val);
             if (post) {
                 document.getElementById('studio-brief-text').innerText = post.brief || 'No visual brief specified.';
                 document.getElementById('mockup-caption-preview').innerText = post.caption || '';
-                if (post.assetUrl) {
-                    document.getElementById('mockup-media-area').innerHTML = `<img src="${post.assetUrl}" class="w-full h-full object-cover">`;
-                } else {
-                    document.getElementById('mockup-media-area').innerHTML = `<p class="text-xs text-slate-400 text-center px-4">No graphic asset uploaded yet.<br><span class="text-[10px] text-slate-500">Upload an image to preview.</span></p>`;
-                }
+                
+                const assets = getPostAssets(post);
+                renderStudioThumbnails(assets);
+                renderMockupMedia(post, assets);
             }
+        };
+
+        function renderStudioThumbnails(assets) {
+            const strip = document.getElementById('studio-thumbnail-strip');
+            const container = document.getElementById('studio-thumbnails-container');
+            const countBadge = document.getElementById('slide-count-badge');
+
+            if (assets.length === 0) {
+                strip.classList.add('hidden');
+                container.innerHTML = '';
+                return;
+            }
+
+            strip.classList.remove('hidden');
+            countBadge.innerText = assets.length;
+
+            container.innerHTML = assets.map((url, i) => `
+                <div class="relative flex-shrink-0 w-16 h-16 rounded-lg border-2 ${i === currentSlideIndex ? 'border-blue-600 ring-2 ring-blue-100' : 'border-slate-200'} overflow-hidden bg-slate-900 group cursor-pointer" onclick="selectStudioSlide(${i})">
+                    <img src="${url}" class="w-full h-full object-cover">
+                    <span class="absolute bottom-1 left-1 text-[9px] font-bold bg-black/70 text-white px-1 rounded">${i + 1}</span>
+                    <button onclick="removeStudioSlide(event, ${i})" class="absolute top-0.5 right-0.5 w-4 h-4 rounded-full bg-red-600 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition"><i data-lucide="x" class="w-3 h-3"></i></button>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        window.selectStudioSlide = function(idx) {
+            currentSlideIndex = idx;
+            const post = postsData.find(p => p.id === currentStudioPostId);
+            if (post) {
+                const assets = getPostAssets(post);
+                renderStudioThumbnails(assets);
+                renderMockupMedia(post, assets);
+            }
+        };
+
+        window.removeStudioSlide = function(event, idx) {
+            event.stopPropagation();
+            const post = postsData.find(p => p.id === currentStudioPostId);
+            if (!post) return;
+            let assets = getPostAssets(post);
+            assets.splice(idx, 1);
+            currentSlideIndex = Math.max(0, currentSlideIndex - 1);
+            
+            updateDoc(doc(db, "posts", post.id), {
+                assetUrls: assets,
+                assetUrl: assets.join(',')
+            });
+        };
+
+        window.clearStudioAssets = function() {
+            const post = postsData.find(p => p.id === currentStudioPostId);
+            if (post && confirm("Clear all design assets for this publication?")) {
+                currentSlideIndex = 0;
+                updateDoc(doc(db, "posts", post.id), {
+                    assetUrls: [],
+                    assetUrl: ""
+                });
+            }
+        };
+
+        function renderMockupMedia(post, assets) {
+            const mediaArea = document.getElementById('mockup-media-area');
+            const dotsArea = document.getElementById('mockup-dots');
+
+            if (assets.length === 0) {
+                mediaArea.innerHTML = `<p class="text-xs text-slate-400 text-center px-4">No graphic asset uploaded yet.<br><span class="text-[10px] text-slate-500">Upload single or carousel images.</span></p>`;
+                dotsArea.innerHTML = '';
+                return;
+            }
+
+            const safeIdx = Math.min(currentSlideIndex, assets.length - 1);
+            const currentUrl = assets[safeIdx];
+
+            let carouselControls = '';
+            if (assets.length > 1) {
+                carouselControls = `
+                    <button onclick="prevMockupSlide()" class="absolute left-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-black/60 hover:bg-black/80 text-white flex items-center justify-center transition z-20"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
+                    <button onclick="nextMockupSlide()" class="absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-black/60 hover:bg-black/80 text-white flex items-center justify-center transition z-20"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
+                    <span class="absolute top-3 right-3 px-2 py-0.5 rounded-full text-[10px] font-bold bg-black/70 text-white z-20">${safeIdx + 1} / ${assets.length}</span>
+                `;
+            }
+
+            mediaArea.innerHTML = `
+                <img src="${currentUrl}" class="w-full h-full object-cover">
+                ${carouselControls}
+            `;
+
+            dotsArea.innerHTML = assets.map((_, i) => `<span class="w-1.5 h-1.5 rounded-full ${i === safeIdx ? 'bg-blue-500' : 'bg-slate-600'}"></span>`).join('');
+            lucide.createIcons();
+        }
+
+        window.prevMockupSlide = function() {
+            const post = postsData.find(p => p.id === currentStudioPostId);
+            if (!post) return;
+            const assets = getPostAssets(post);
+            currentSlideIndex = (currentSlideIndex - 1 + assets.length) % assets.length;
+            renderStudioThumbnails(assets);
+            renderMockupMedia(post, assets);
+        };
+
+        window.nextMockupSlide = function() {
+            const post = postsData.find(p => p.id === currentStudioPostId);
+            if (!post) return;
+            const assets = getPostAssets(post);
+            currentSlideIndex = (currentSlideIndex + 1) % assets.length;
+            renderStudioThumbnails(assets);
+            renderMockupMedia(post, assets);
         };
 
         window.setStudioPlatform = function(platform) {
@@ -810,23 +985,27 @@
         };
 
         window.handleDesignerUpload = function(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const url = URL.createObjectURL(file);
-                document.getElementById('mockup-media-area').innerHTML = `<img src="${url}" class="w-full h-full object-cover">`;
-                const post = postsData.find(p => p.id === currentStudioPostId);
-                if (post) {
-                    post.assetUrl = url;
-                    post.status = "Review Needed";
-                    setDoc(doc(db, "posts", post.id), post);
-                }
-            }
+            const files = Array.from(event.target.files);
+            if (files.length === 0) return;
+
+            const post = postsData.find(p => p.id === currentStudioPostId);
+            if (!post) return;
+
+            const existingAssets = getPostAssets(post);
+            const newUrls = files.map(file => URL.createObjectURL(file));
+            const updatedAssets = [...existingAssets, ...newUrls];
+
+            updateDoc(doc(db, "posts", post.id), {
+                assetUrls: updatedAssets,
+                assetUrl: updatedAssets.join(','),
+                status: "Review Needed"
+            });
         };
 
         window.submitStudioDesignForReview = function() {
             if (currentStudioPostId) {
                 updateDoc(doc(db, "posts", currentStudioPostId), { status: "Review Needed" });
-                alert("Design flagged as 'Under Review' and sent to the Client Portal.");
+                alert("Design & slides flagged as 'Under Review' and submitted to Client Portal.");
             }
         };
 
@@ -854,6 +1033,7 @@
             if (id) {
                 const p = postsData.find(x => x.id === id);
                 if (p) {
+                    const assets = getPostAssets(p);
                     document.getElementById('form-post-id').value = p.id;
                     document.getElementById('form-date').value = p.date;
                     document.getElementById('form-platform').value = p.platform;
@@ -864,7 +1044,7 @@
                     document.getElementById('form-caption').value = p.caption;
                     document.getElementById('form-brief').value = p.brief;
                     document.getElementById('form-cta').value = p.cta || '';
-                    document.getElementById('form-asset-url').value = p.assetUrl || '';
+                    document.getElementById('form-asset-url').value = assets.join(', ');
                     document.getElementById('form-client-validation').checked = !!p.clientValidation;
                     if (delBtn) delBtn.classList.remove('hidden');
                 }
@@ -883,6 +1063,9 @@
         window.savePost = function(e) {
             e.preventDefault();
             const id = document.getElementById('form-post-id').value || ("post_" + Date.now());
+            const rawAssets = document.getElementById('form-asset-url').value;
+            const assetList = rawAssets ? rawAssets.split(',').map(s => s.trim()).filter(Boolean) : [];
+
             const post = {
                 id,
                 date: document.getElementById('form-date').value,
@@ -894,7 +1077,8 @@
                 caption: document.getElementById('form-caption').value,
                 brief: document.getElementById('form-brief').value,
                 cta: document.getElementById('form-cta').value,
-                assetUrl: document.getElementById('form-asset-url').value,
+                assetUrls: assetList,
+                assetUrl: assetList.join(','),
                 clientValidation: document.getElementById('form-client-validation').checked
             };
             setDoc(doc(db, "posts", id), post);
